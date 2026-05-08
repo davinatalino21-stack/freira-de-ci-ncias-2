@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>IA das Feiras</title>
+        <link rel="icon" href="logo.png">
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+
+        <div class="overlay">
+
+            <!-- HEADER -->
+
+            <header>
+
+                <section class="hero" id = "hero">
+
+                <h1 style="text-align: center;">SF<span>AI</span></h1>
+
+                <p>
+                Assistente inteligente para ajudar você a organizar seu projeto
+                </p>
+
+            </section>
+
+            </header>
+            <!-- CHAT -->
+
+            <div class="chat-container" id = "chat-container">
+                <div class="chat-area" id = "chat-area">
+
+                <div class="message bot">
+                    Olá 👋  
+                    Pergunte qualquer coisa sobre as Feiras de Ciências, Horários e muito mais!
+                </div>
+
+                </div>
+
+                <div class="input-area">
+                    
+                    <div>
+                        <textarea placeholder = "O que vamos fazer hoje?" id = "user-input"  autocomplete = "off"></textarea>
+                    </div>
+
+                    <button onclick = "enviarMensagem()" class = "sla">Enviar</button>
+                </div>
+
+            </div>
+
+            <!-- SUGESTÕES -->
+
+            <div class="suggestions" id = "suggestions">
+
+                <button onclick = "btn(1)"">📅 Cronograma e Prazos</button>
+                <button onclick = "btn(2)">📊 Dados e Estatísticas</button>
+                <button onclick = "btn(3)">📍 Mapa dos Estandes</button>
+                <button onclick = "btn(4)">⚖️ Pesos da Avaliação</button>
+
+            </div>
+
+            <div class = "menu">
+
+                <div class="logo" onclick = "window.location.href = 'Layout.html'">
+                    SF<span>AI</span>
+                </div>
+
+                <div class = "browser-container">
+                    <img src = "img/browser.png" class = "browser-logo" onclick = "browser()" title = "Histórico de Conversas">
+                </div>
+                
+
+                <div class = "calculadora-container">
+                    <img src = "img/calculadora.png" class = "calculadora-img" onclick = "calculadora()" title = "Calculadora de Gastos" id = "calculadora">
+                </div>
+
+                </div>
+
+            <div class = "calculadora hidden" id = "calculadoraverdade">
+                <div class="calculadora-body">
+                    <div class="calculadora-left">
+                        <div class="calculadora-controls">
+                            <div class = "calculadora-adicionar" onclick = "adicionaraa()" id = "adicionar">Adicionar</div>
+                            <div class = "calculadora-remover" onclick = "reset()" id = "remover">Resetar</div>
+                            <button type="button" class="calculadora-toggle" id="toggleTabela">Mostrar tabela</button>
+                            <input type = "text" placeholder = "Digite seu material AQUI!" id = "materialInput" class = "materialInput">
+                            <input type = "number" step = "0.01" placeholder = "Digite o preço do material AQUI!" id = "precoInput" class = "precoInput">
+                        </div>
+                        <p class = "total" id = "total">0</p>
+
+                        <div class = "calculadora-grid" id = "calculadoraGrid"></div>
+                    </div>
+
+                    <div class="calculadora-right">
+                        <div class = "tabelaExcel hidden-tabela" id = "tabelaExcel">
+                            <div class = "inf">
+                                <p class = "nome">Material</p>
+                                <p class = "preco">Preço</p>
+                                <p class = "qtd">Quantidade</p>
+                                <p class = "total-col">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class = "browser-options show" id = "hist"></div>
+
+            <footer>
+                SFAI • Assistente de Feira de ciências
+                <br>
+                <a href="javascript:void(0)" onclick = 'window.location.href = `knowMore.html?msg=${encodeURIComponent("index")}`'>➡Saiba mais</a>
+            </footer>
+
+        </div>
+        <script src="script.js" defer></script>
+    </body>
+</html>

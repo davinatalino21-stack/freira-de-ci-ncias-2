@@ -1,0 +1,198 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "inter", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+main {
+  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
+  min-height: 170vh;
+  color: white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5vh;
+}
+main img {
+  width: 60%;
+  object-fit: cover;
+  position: sticky;
+  top: 0;
+  opacity: 0.8;
+  z-index: 1;
+}
+.heroContainer {
+  display: flex;
+  height: 180vh;
+  width: 80vw;
+  text-align: justify;
+  font-size: 3vh;
+  background: rgba(10, 25, 47, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 10vh;
+  border-radius: 10vh;
+  z-index: 2;
+  gap: 5vh;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.7;
+}
+.hero {
+  width: fit-content;
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  padding-left: 10px;
+}
+
+.heroh1 {
+  margin-top: 5vh;
+}
+
+button {
+  padding: 2.5vh;
+  border-radius: 3vh;
+  border: none;
+  color: black;
+  font-size: 3vh;
+}
+
+button:hover {
+  background-color: #2ec4a6;
+  color: white;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+a {
+  color: white;
+  font-size: 2.5vh;
+}
+.benefitsContainer {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 5vh;
+  gap: 5vh;
+}
+.benefitsContainer p {
+  font-size: 2vh;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.benefitsContainer h4 {
+  align-items: stretch;
+  color: #2ec4a6;
+}
+.firstBenefit {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 2vh;
+  overflow: hidden;
+  width: 30vh;
+  gap: 2vh;
+}
+.firstBenefit h4 {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 1vh;
+}
+.firstBenefit p {
+  font-size: 3vh;
+  line-height: 1.5;
+}
+
+.secondBenefit h4 {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 1vh;
+}
+
+.secondBenefit p {
+  font-size: 3vh;
+  line-height: 1.5;
+}
+
+.secondBenefit {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 2vh;
+  overflow: hidden;
+  width: 30vh;
+  gap: 2vh;
+}
+
+.thirdBenefit h4 {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 1vh;
+}
+
+.thirdBenefit p {
+  font-size: 3vh;
+  line-height: 1.5;
+}
+
+.thirdBenefit {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3vh;
+  padding: 2vh;
+  overflow: hidden;
+  width: 30vh;
+  gap: 2vh;
+}
+
+.firstBenefit,
+.secondBenefit,
+.thirdBenefit {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  cursor: default;
+  user-select: none;
+}
+
+.firstBenefit h4,
+.secondBenefit h4,
+.thirdBenefit h4 {
+  height: 13vh;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+}
+
+.firstBenefit:hover,
+.secondBenefit:hover,
+.thirdBenefit:hover {
+  transform: translateY(-5px);
+  border-color: #00d4ff;
+  cursor: default;
+  user-select: none;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .benefitsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .firstBenefit,
+  .secondBenefit,
+  .thirdBenefit {
+    width: 80%;
+  } 
+}

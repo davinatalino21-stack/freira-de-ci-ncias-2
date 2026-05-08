@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SFAI</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Layout.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">SF<span>AI</span></div>
+    </header>
+    <div class="containerAll">
+      <div class="containerBody">
+        <div class="minichat displayNone" id="minichat">
+          <div class="chat-header">Análise de Projeto</div>
+          <textarea
+            class="input-resumo"
+            placeholder="Cole seu resumo científico aqui para identificar a área..."
+          ></textarea>
+          <button class="btn-analisar">Analisar Resumo</button>
+        </div>
+        <div class="informacoesIniciais">
+          <h2 style="text-align: center">
+            <b>Sua pesquisa científica impulsionada por IA</b>
+          </h2>
+          <p style="text-align: justify" class="parr">
+            O <strong>SFAI</strong> é o seu guia inteligente pelas maiores
+            feiras de ciências do Brasil. Especializada em dados da Mostratec e
+            Febrace, nossa IA responde instantaneamente sobre projetos
+            finalistas, análise de resumos e categorias científicas,
+            transformando sua pesquisa em um projeto de alto impacto.
+          </p>
+        </div>
+      </div>
+      <div
+        style="
+          text-align: center;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin: 10px;
+        "
+      >
+        <button class="botao" ; onclick="(btn(5), btnf(5))">Finalistas</button>
+        <button class="botao" ; onclick="(btn(6), btnf(6))">
+          Projetos Febrace
+        </button>
+        <button class = "botao"; onclick = "window.location.href = 'index.html'">Acessar o ChatBot</button>
+        <button class="botao" ; onclick="(btn(7), btnf(7))">
+          Projetos MostraTec
+        </button>
+        <button class="chat" onclick="minichat()">Mini Chat</button>
+      </div>
+    </div>
+
+    <footer><a href="knowMore.html">➡Saiba mais</a></footer>
+
+    <script src="script.js" defer></script>
+    <script src="layout.js"></script>
+  </body>
+</html>
