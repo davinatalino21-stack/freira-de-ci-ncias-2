@@ -93,7 +93,7 @@ footer {
 }
 .minichat {
   width: 350px;
-  background: rgba(255, 255, 255, 0.05); /* Efeito de vidro */
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 20px;
