@@ -11,7 +11,7 @@ header {
   justify-content: center;
 }
 body {
-  background: radial-gradient(circle at center, #0d1b2a 0%, #020c1b 100%);
+  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
   background-attachment: fixed;
 
   min-height: 100vh;
