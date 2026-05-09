@@ -382,44 +382,31 @@ async function enviarMensagem() {
   contexto = historico.slice(-10);
   console.log(contexto);
   try {
-    const CHAVE_API = "";
+    const url = "/.netlify/functions/APIfunction";
+    console.log("Chamando o backend...");
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${CHAVE_API}`;
-    console.log("Entrou no try");
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `Instrução: Você é o assistente da FEBRACE. 
-                Use estes dados oficiais: ${CONTEXTO_FEBRACE}
-                Pergunta: ${userMessage}`,
-              },
-            ],
-          },
-        ],
+        prompt: `Instrução: Você é o assistente da FEBRACE. 
+                 Use estes dados oficiais: ${CONTEXTO_FEBRACE}
+                 Pergunta: ${userMessage}`,
       }),
     });
-    console.log("Depois do fetch");
 
     const data = await response.json();
 
-    if (data.candidates && data.candidates.length > 0) {
-      console.log(data);
-
-      const parts = data.candidates[0].content.parts;
-      const textoIA = parts.map((p) => p.text).join("");
+    if (data.resposta) {
+      const textoIA = data.resposta;
 
       aiElement.innerHTML = textoIA
         .replace(/\n/g, "<br>")
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>");
     } else {
-      aiElement.textContent = "A IA não respondeu.";
-      console.log("Resposta estranha:", data);
+      aiElement.textContent = "Erro na resposta do backend.";
+      console.log("Erro detalhado:", data);
     }
   } catch (erro) {
     aiElement.textContent = "Erro de conexão!";
