@@ -3,6 +3,7 @@ exports.handler = async (event) => {
 
   try {
     const { prompt } = JSON.parse(event.body);
+    console.log("Recebi o prompt:", prompt);
 
     const response = await fetch(`https://googleapis.com{API_KEY}`, {
       method: 'POST',
@@ -13,18 +14,24 @@ exports.handler = async (event) => {
     });
 
     const data = await response.json();
+    console.log("Resposta bruta do Google:", JSON.stringify(data));
 
-    if (data.error) {
-        return { statusCode: 500, body: JSON.stringify({ resposta: "Erro na API do Google", erro: data.error }) };
+    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+      const textoGerado = data.candidates[0].content.parts[0].text;
+      
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ resposta: textoGerado }),
+      };
+    } else {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ resposta: "Google mandou um formato estranho", erro: data }),
+      };
     }
 
-    const textoGerado = data.candidates[0].content.parts[0].text;
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ resposta: textoGerado }),
-    };
   } catch (error) {
+    console.error("ERRO CRÍTICO NA FUNÇÃO:", error.message);
     return { 
       statusCode: 500, 
       body: JSON.stringify({ resposta: "Erro no servidor", detalhes: error.message }) 
