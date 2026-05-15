@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+}
+body {
+    background: radial-gradient(circle at center, #0d1b2a 0%,#020c1b 100%);
+    overflow: hidden;
+}
+main {
+    width: 100vw;
+    height: 80vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+main div {
+    width: 400px;
+    height: 250px;
+
+    background: rgba(darkblue, 1);
+    border: 3px double blue;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;    
+    justify-content: center;
+
+    margin-top: 10px;
+}
+input {
+    background: beige;
+    width: 300px;
+    margin: 30px;
+    margin-top: 5px;
+    margin-left: 50px;
+    border-radius: 5px;
+    border: 1px solid blue;
+    text-align: left;
+}
+label {
+    color: white;
+    text-align: center;
+    justify-Content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 50px;
+}
+.e-mail {
+    border: lightblue solid 2px;
+}
+.senha {
+    border: lightblue solid 2px;
+}
+button {
+    margin-top: 10px;
+    margin-left: 50px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    width: 305px;
+    height: 20px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+button:hover {
+    background: aqua;
+}
+.logo {
+    width: 102vw;
+    color: beige;
+    position: relative;
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 5vh;
+    font-size: 10vh;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: default;
+}
+.logo span {
+    color: #2ec5a6;
+}
+p{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    cursor: default;
+}
