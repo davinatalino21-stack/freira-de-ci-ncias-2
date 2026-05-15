@@ -90,3 +90,6 @@ p{
     font-size: 15px;
     cursor: default;
 }
+a {
+    color: rgba(white, 0.5);
+}
