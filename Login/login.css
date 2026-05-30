@@ -18,7 +18,7 @@ main div {
     width: 400px;
     height: 250px;
 
-    background: rgba(darkblue, 1);
+    background: rgba(255, 255, 255, 0.2);
     border: 3px double blue;
     border-radius: 10px;
 
@@ -39,7 +39,6 @@ input {
     width: 300px;
     margin: 30px;
     margin-top: 5px;
-    margin-left: 50px;
     border-radius: 5px;
     border: 1px solid blue;
     text-align: left;
@@ -47,9 +46,21 @@ input {
 label {
     color: white;
     text-align: center;
+    align-items: center;
     justify-Content: center;
     font-family: Arial, Helvetica, sans-serif;
     margin-left: 50px;
+}
+.label1 {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    margin-left: 35px;
+}
+.label2 {
+    display: flex;
+    text-align: center;
+    align-items: center;
 }
 .e-mail {
     border: lightblue solid 2px;
@@ -59,7 +70,7 @@ label {
 }
 button {
     margin-top: 10px;
-    margin-left: 50px;
+    margin-left: 30px;
     border: 1px solid blue;
     border-radius: 5px;
     width: 305px;
@@ -89,4 +100,20 @@ p{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     cursor: default;
+}
+.a1 {
+    color: beige;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: -27px;
+}
+.a2 {
+    color: beige;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: -27px;
 }
