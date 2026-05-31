@@ -56,6 +56,7 @@ header {
 .hero {
   text-align: center;
   margin-top: 40px;
+  will-change: opacity, transform;
 }
 
 .hero h1 {
@@ -88,15 +89,40 @@ header {
   backdrop-filter: blur(10px);
   border-radius: 16px;
   scroll-behavior: smooth;
-  overflow-y: auto;
   z-index: 1;
 }
 
 .chat-area {
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
   padding: 25px;
   overflow-y: auto;
   z-index: 1;
+}
+
+.mode-badge {
+  align-self: flex-start;
+  margin: 0 25px 12px 25px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(12, 53, 78, 0.85);
+  color: #d8f7ff;
+  font-size: 12px;
+  display: none;
+  border: 1px solid rgba(46, 196, 166, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  user-select: none;
+}
+
+.mode-badge.show {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-badge.classificacao {
+  background: rgba(14, 46, 65, 0.95);
 }
 
 .message {
@@ -130,23 +156,26 @@ header {
 .input-area {
   display: flex;
   position: relative;
-  top: -5%;
+  top: 0;
   left: 5%;
   border-radius: 16px;
-  overflow: hidden;
-  align-items: center;
+  overflow: visible;
+  align-items: flex-end;
   justify-content: center;
   flex-direction: row;
   width: 90%;
-  height: 10vh;
+  min-height: 10vh;
+  height: auto;
   flex-shrink: 0;
   background: rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
   z-index: 4;
+  box-sizing: border-box;
 }
 
 .input-area textarea {
   flex: 1;
-  display: flex;
+  display: block;
   border: none;
   outline: none;
   font-size: 3vh;
@@ -154,18 +183,98 @@ header {
   resize: none;
   color: white;
   z-index: 4;
+  min-height: 2.5rem;
+  max-height: 35vh;
+  overflow-y: auto;
+  line-height: 1.4;
+  padding: 0.75rem 0.8rem;
+  box-sizing: border-box;
+  contain: layout style paint;
+  will-change: height;
 }
-.input-area div {
+
+.options-input-area {
+  height: auto;
+  width: auto;
+  padding: 1.5vh 3vh;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  font-size: 6vh;
+  position: relative;
+  z-index: 5;
+}
+
+.feira-selector {
   position: relative;
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
+}
+
+.options-input-area:hover {
+  background: rgb(65, 73, 75);
+  transition: 0.3s;
+}
+
+.feira-popup {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  min-width: 200px;
+  background: rgba(5, 16, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 20;
+}
+
+.feira-popup.show {
+  display: flex;
+}
+
+.feira-option,
+.feira-popup button {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
   width: 100%;
-  top: 10%;
-  margin-left: 2%;
+  text-align: center;
+}
+
+.feira-popup button:hover {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: #00ffcc;
+  color: white !important;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+  transform: translateY(-2px);
+}
+
+.input-text {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  margin-left: 1rem;
   z-index: 4;
 }
 
-.input-area button {
+.input-area > button {
   background: #2ec4a6;
   border: none;
   border-radius: 50%;
@@ -176,7 +285,7 @@ header {
   width: 100px;
   display: none;
 }
-.input-area button:hover {
+.input-area > button:hover {
   border: none;
   background: #249b83;
 }
@@ -189,6 +298,7 @@ header {
   gap: 15px;
   margin-top: 25px;
   flex-wrap: wrap;
+  will-change: opacity, transform;
 }
 
 /* FOOTER */
@@ -763,8 +873,6 @@ footer {
   filter: brightness(0.8);
 }
 
-
-
 @media (max-device-width: 932px) {
   .menu {
     height: 7vh;
@@ -804,14 +912,14 @@ footer {
     height: 10vw;
     overflow-y: hidden;
   }
-  .input-area button {
+  .input-area > button {
     display: block;
   }
   .sla:active {
     background: #249b83;
     transition: 0.3s;
   }
-  .input-area button:hover {
+  .input-area > button:hover {
     background: #2ec4a6;
     transition: 0.3s;
   }
@@ -957,7 +1065,7 @@ footer {
   .calculadora-toggle:hover,
   .browser-container:hover,
   .calculadora-container:hover,
-  .input-area button:hover,
+  .input-area > button:hover,
   .suggestions button:hover,
   .sla:hover,
   .addbtn:hover,
@@ -973,7 +1081,7 @@ footer {
   .calculadora-toggle:active,
   .browser-container:active,
   .calculadora-container:active,
-  .input-area button:active,
+  .input-area > button:active,
   .suggestions button:active,
   .sla:active,
   .addbtn:active,
