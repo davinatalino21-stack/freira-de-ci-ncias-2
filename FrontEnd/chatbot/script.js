@@ -2,6 +2,51 @@ console.log("SCRIPT CARREGOU");
 const input = document.getElementById("user-input");
 const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
+const modeBadge = document.getElementById("modeBadge");
+
+function atualizarModoBadge() {
+  if (!feiraSelecionada) {
+    modeBadge.classList.remove("show", "classificacao");
+    modeBadge.textContent = "";
+    return;
+  }
+
+  modeBadge.classList.add("show", "classificacao");
+  if (feiraSelecionada === "MOSTRATEC") {
+    modeBadge.textContent = "🔬 Classificando para Mostratec";
+  } else if (feiraSelecionada === "FEBRACE") {
+    modeBadge.textContent = "🏆 Classificando para FEBRACE";
+  } else {
+    modeBadge.textContent = "🏷️ Classificação ativa";
+  }
+}
+
+modeBadge.addEventListener("click", () => {
+  if (feiraSelecionada) {
+    feiraSelecionada = "";
+    input.placeholder = "O que vamos fazer hoje?";
+    atualizarModoBadge();
+  }
+});
+
+function ajustarAlturaTextarea() {
+  const maxHeight = window.innerHeight * 0.35;
+  const newHeight = Math.min(input.scrollHeight, maxHeight);
+
+  // Only update if height actually changed
+  if (input.offsetHeight !== newHeight) {
+    input.style.height = `${newHeight}px`;
+  }
+}
+
+function resetarAlturaTextarea() {
+  input.style.height = "auto";
+  input.style.height = `${Math.min(input.scrollHeight, window.innerHeight * 0.35)}px`;
+}
+
+input.addEventListener("input", ajustarAlturaTextarea);
+ajustarAlturaTextarea();
+
 let subir = 0;
 let primeiravez = true;
 const cal = document.getElementById("calculadora");
@@ -16,338 +61,57 @@ let itens = [];
 
 let carregando = false;
 
-let historico = [];
+let historicoConversa = [];
+
+function limparHistorico() {
+  historicoConversa = [];
+}
 
 let contexto = "";
+let feiraSelecionada = "";
 
-const CONTEXTO_FEBRACE = `
-Você é o SFAI, assistente oficial da Feira de Ciências.
-
-OBJETIVO:
-Responder perguntas EXCLUSIVAMENTE com base nos dados fornecidos abaixo sobre FEBRACE e MOSTRATEC.
-
-REGRAS IMPORTANTES:
-- Nunca invente informações
-- Nunca use conhecimento externo
-- Se a resposta não estiver nos dados, diga:
-  "Não encontrei essa informação. Acesse febrace.org.br ou liberato.com.br"
-- Sempre seja claro e direto
-- Sempre informe o ano ao citar projetos
-
-ESTRUTURA DE RESPOSTA:
-- Respostas curtas e organizadas
-- Use listas quando necessário
-- Não misture informações de anos diferentes
-
-
-==============================
-CRITÉRIO DE CLASSIFICAÇÃO (MUITO IMPORTANTE)
-==============================
-
-- A classificação deve ser baseada no FOCO PRINCIPAL do projeto, não apenas no contexto.
-
-- Pergunta principal:
-  O projeto CRIA tecnologia ou APLICA tecnologia?
-
-REGRAS:
-
-1. Se o projeto envolve:
-   - desenvolvimento de software
-   - algoritmos
-   - inteligência artificial
-   - análise de dados
-   - sistemas computacionais
-
-   → Classificar como:
-   Ciências Exatas e da Terra → Ciência da Computação
-
-   (mesmo que seja aplicado em logística, saúde, indústria, etc.)
-
-2. Só classificar como Engenharias quando:
-   - o foco for otimização de processos reais
-   - melhoria de sistemas físicos
-   - produção, logística, indústria
-   - construção ou protótipo físico
-
-3. NÃO classificar apenas pelo contexto:
-   - "logística", "hospital", "indústria" NÃO definem a área sozinhos
-
-4. Sempre priorizar o núcleo técnico do projeto
-
-
-==============================
-PROCESSO DE DECISÃO
-==============================
-
-Antes de responder, analise:
-
-1. O projeto desenvolve tecnologia (software, algoritmo, sistema)?
-2. Ou aplica tecnologia para resolver um problema prático?
-3. Qual é o elemento mais técnico e central do projeto?
-
-Baseie a classificação nisso.
-
-
-==============================
-EXEMPLOS DE CLASSIFICAÇÃO
-==============================
-
-- "Sistema de detecção de fraudes em logística"
-  → Ciências Exatas e da Terra (Ciência da Computação)
-
-- "App com IA para diagnóstico médico"
-  → Ciências Exatas e da Terra (Ciência da Computação)
-
-- "Otimização de rotas de entrega"
-  → Engenharias (Engenharia de Produção)
-
-- "Desenvolvimento de um robô físico para coleta de lixo"
-  → Engenharias
-
-- "Estudo do crescimento bacteriano"
-  → Ciências Biológicas
-
-- "Análise estatística de dados populacionais"
-  → Ciências Exatas e da Terra
-
-
-==============================
-REGRAS DE JUSTIFICATIVA
-==============================
-
-- Sempre justificar com base no FOCO TÉCNICO
-- Nunca justificar apenas pela área de aplicação
-- Explicar de forma objetiva e direta
-
-
-==============================
-CRONOGRAMA FEBRACE 2026
-==============================
-
-- 01/09/2025 (18h): Prazo para inscrições de Feiras Afiliadas
-- 20/10/2025 (18h): Submissão completa de projetos
-- 19/12/2025: Divulgação dos selecionados
-- 16/03/2026: Credenciamento e montagem (USP)
-- 17 a 19/03/2026: Mostra de Projetos
-- 20/03/2026: Premiação e encerramento
-
-
-==============================
-REQUISITOS
-==============================
-
-- Escolaridade: 8º/9º ano, ensino médio ou técnico (2025)
-- Idade: Máximo 20 anos até 01/05/2026
-- Equipe: Até 3 estudantes
-- Orientador: obrigatório (21+ anos)
-- Coorientador: opcional (18+)
-- Duração: até 12 meses (2025)
-
-Documentos obrigatórios:
-- Plano de Pesquisa
-- Resumo (até 2000 caracteres)
-- Relatório/Artigo (até 8 páginas)
-- Diário de Bordo
-
-Ética:
-- Formulários extras para humanos, animais, DNA ou substâncias perigosas
-
-
-==============================
-ÁREAS FEBRACE (COM DEFINIÇÕES)
-==============================
-
-- Ciências Exatas e da Terra:
-Projetos focados em matemática, algoritmos, computação, simulações, análise de dados, física e química.
-
-Subáreas:
-Matemática
-Probabilidade e Estatística
-Ciência da Computação
-Astronomia
-Física
-Química
-Geociências
-Oceanografia
-
-
-- Ciências Biológicas:
-Projetos relacionados a seres vivos, organismos, células, genética, microbiologia e ecologia.
-
-Subáreas:
-Biologia Geral
-Genética
-Botânica
-Zoologia
-Ecologia
-Morfologia
-Fisiologia
-Bioquímica
-Biofísica
-Farmacologia
-Imunologia
-Microbiologia
-Parasitologia
-
-
-- Ciências da Saúde:
-Projetos focados na saúde humana, prevenção, tratamento e bem-estar.
-
-Subáreas:
-Medicina
-Odontologia
-Farmácia
-Enfermagem
-Nutrição
-Saúde Coletiva
-Fonoaudiologia
-Fisioterapia e Terapia Ocupacional
-Educação Física
-
-
-- Ciências Agrárias:
-Projetos voltados para agricultura, produção de alimentos, meio rural e recursos naturais.
-
-Subáreas:
-Agronomia
-Recursos Florestais e Engenharia Florestal
-Engenharia Agrícola
-Zootecnia
-Medicina Veterinária
-Recursos Pesqueiros e Engenharia de Pesca
-Ciência e Tecnologia de Alimentos
-
-
-- Ciências Sociais Aplicadas:
-Projetos sobre sociedade, economia, gestão, comunicação e comportamento social.
-
-Subáreas:
-Direito
-Administração
-Economia
-Arquitetura e Urbanismo
-Planejamento Urbano e Regional
-Demografia
-Ciência da Informação
-Museologia
-Comunicação
-Serviço Social
-Economia Doméstica
-Desenho Industrial
-Turismo
-
-
-- Engenharias:
-Projetos focados na aplicação prática de conhecimento científico para resolver problemas reais, construir ou otimizar sistemas físicos e industriais.
-
-Subáreas:
-Engenharia Civil
-Engenharia de Minas
-Engenharia de Materiais e Metalúrgica
-Engenharia Elétrica
-Engenharia Mecânica
-Engenharia Química
-Engenharia Sanitária
-Engenharia de Produção
-Engenharia Nuclear
-Engenharia de Transportes
-Engenharia Naval e Oceânica
-Engenharia Aeroespacial
-Engenharia Biomédica
-
-
-- Ciências Humanas:
-Projetos sobre comportamento humano, cultura, sociedade, educação e pensamento.
-
-Subáreas:
-Filosofia
-Sociologia
-Antropologia
-Arqueologia
-História
-Geografia
-Psicologia
-Educação
-Ciência Política
-Teologia
-
-REGRA CRÍTICA:
-
-- O uso de matemática, estatística ou algoritmos NÃO define a área principal.
-
-- Se a estatística for usada como ferramenta para estudar:
-  - comportamento humano
-  - sociedade
-  - decisões
-  - opinião pública
-
-→ Classificar como:
-Ciências Humanas ou Ciências Sociais Aplicadas
-
-- Só classificar como Ciências Exatas quando o foco for:
-  - desenvolver métodos matemáticos/estatísticos
-  - teoria estatística
-
-`;
-let ola = `
-CATEGORIAS MOSTRATEC
-- Biologia Celular e Molecular
-- Bioquímica e Química
-- Ciências Ambientais
-- Ciências Animais e de Plantas
-- Ciências da Computação
-- Ciências da Saúde
-- Ciências Planetárias, Terrestres, Matemática e Física
-- Educação e Humanidades
-- Engenharia Ambiental e Sanitária
-- Engenharia e Materiais
-- Engenharia Elétrica
-- Engenharia Eletrônica
-- Engenharia Mecânica
-- História e Ciências Sociais
-
-PROJETOS DESTAQUE FEBRACE 2024
-- Alimpar (CE): desinfecção UV com energia solar
-- Ecofloor (AL): pisos com casca de sururu
-- ConnectBreathe (SP): fisioterapia respiratória com gameterapia
-- AgroSapiens (SE): robô agrícola com IA
-- VAPER (RS): plataforma para empreendedores rurais
-
-PROJETOS DESTAQUE MOSTRATEC 2024
-1º: Educação e pensamento complexo (MA)
-- Ensino interdisciplinar baseado em Edgar Morin
-
-2º: RECIVERY (SC)
-- Geolocalização de coleta seletiva
-
-3º: Medicina na Bahia (BA)
-- Distribuição de profissionais de saúde
-
-4º: Poluição em águas gaúchas (RS)
-- Cafeína, vírus e impacto ambiental
-
-5º: Identificação de fungos (MS)
-- Espectroscopia para pastagens
-
-
-PROJETOS FEBRACE 2025
-- Fotômetro com celular (MG)
-- NANOTEC (BA): remoção de cobre da água
-- Filtro com mucajá (PA)
-- Sírius (SP): simulação de raios-X
-- Coffee 3D (ES): filamento com borra de café
-
-FINALISTAS MOSTRATEC 2025
-- Larvicidas naturais contra Aedes aegypti (PR)
-- L-Lactato e depressão (SC)
-- Óleos vegetais para biodiesel (AM)
-- App R&S 360 (BA)
-- Alfavaca contra veneno (MA)
-`;
-
-input.addEventListener("keypress", (event) => {
+input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    enviarMensagem();
+    if (event.shiftKey) {
+      // Shift+Enter: quebra de linha
+      return; // deixa o comportamento padrão
+    } else {
+      // Enter: enviar mensagem
+      event.preventDefault();
+      enviarMensagem();
+    }
+  }
+});
+
+function toggleFeiraPopup() {
+  const popup = document.getElementById("feiraPopup");
+  popup.classList.toggle("show");
+}
+
+function selecionarFeira(opcao) {
+  if (feiraSelecionada === opcao) {
+    feiraSelecionada = "";
+  } else {
+    feiraSelecionada = opcao;
+  }
+
+  document.getElementById("feiraPopup").classList.remove("show");
+
+  if (feiraSelecionada) {
+    input.placeholder = `Pergunte sobre ${feiraSelecionada}`;
+  } else {
+    input.placeholder = "O que vamos fazer hoje?";
+  }
+
+  atualizarModoBadge();
+}
+
+window.addEventListener("click", (event) => {
+  const popup = document.getElementById("feiraPopup");
+  const toggle = event.target.closest(".options-input-area");
+  const insidePopup = event.target.closest(".feira-popup");
+  if (!toggle && !insidePopup && popup) {
+    popup.classList.remove("show");
   }
 });
 
@@ -362,58 +126,107 @@ async function enviarMensagem() {
   messageElement.textContent = userMessage;
   chatArea.appendChild(messageElement);
   chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-  if (primeiravez == true) {
+
+  if (primeiravez === true) {
     const chatAra = document.getElementById("hero");
     const sug = document.getElementById("suggestions");
+
     chatAra.classList.add("fade-out1");
     sug.classList.add("fade-out2");
+
     setTimeout(() => {
       chatAra.style.display = "none";
       sug.style.display = "none";
     }, 500);
+
     primeiravez = false;
   }
+
   input.value = "";
+  resetarAlturaTextarea();
 
   const aiElement = document.createElement("div");
   aiElement.classList.add("message", "bot");
   aiElement.textContent = "pensando...";
   chatArea.appendChild(aiElement);
-  contexto = historico.slice(-10);
-  console.log(contexto);
+
+  const modo = feiraSelecionada ? "classificacao" : "conversa";
+
+  let promptFinal = userMessage;
+
+  if (feiraSelecionada) {
+    promptFinal =
+      `[O usuário escolheu focar na feira: ${feiraSelecionada}]. ` +
+      `Resumo do projeto: ${userMessage}`;
+  }
+
   try {
-    const url = "/.netlify/functions/APIfunction";
-    console.log("Chamando o backend...");
+    const url =
+      "https://davidumbproxmax-classificador-mostratec.hf.space/classificar";
+
+    console.log("Chamando a API de IA Híbrida...");
 
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({
-        prompt: `Instrução: Você é o assistente da FEBRACE. 
-                 Use estes dados oficiais: ${CONTEXTO_FEBRACE}
-                 Pergunta: ${userMessage}`,
+        modo,
+        feira: feiraSelecionada || "",
+        mensagem: userMessage,
+        resumo: promptFinal,
+        historico: historicoConversa,
       }),
     });
 
     const data = await response.json();
 
-    if (data.resposta) {
-      const textoIA = data.resposta;
+    if (data.resultado) {
+      const textoIA = data.resultado;
+
+      // Salva histórico APENAS depois da resposta chegar
+      if (modo === "conversa") {
+        historicoConversa.push({
+          role: "user",
+          content: userMessage,
+        });
+
+        historicoConversa.push({
+          role: "assistant",
+          content: textoIA,
+        });
+
+        // Mantém somente as últimas 10 mensagens
+        if (historicoConversa.length > 10) {
+          historicoConversa = historicoConversa.slice(-10);
+        }
+
+        console.log("Histórico atual:", historicoConversa);
+      }
 
       aiElement.innerHTML = textoIA
+        .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+        .replace(/^## (.*)$/gm, "<h2>$1</h2>")
+        .replace(/^# (.*)$/gm, "<h1>$1</h1>")
+        .replace(/^---$/gm, "<hr>")
         .replace(/\n/g, "<br>")
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>");
     } else {
-      aiElement.textContent = "Erro na resposta do backend.";
+      aiElement.textContent = "Erro na resposta do backend da IA.";
       console.log("Erro detalhado:", data);
     }
   } catch (erro) {
-    aiElement.textContent = "Erro de conexão!";
+    aiElement.textContent = "Erro de conexão com o servidor de IA!";
     console.error("Erro no Fetch:", erro);
   }
 
-  chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+  chatArea.scrollTo({
+    top: chatArea.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
 function btn(entrada) {

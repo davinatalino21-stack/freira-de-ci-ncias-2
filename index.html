@@ -1,126 +1,183 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-    <head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="theme-color"
+      content="#172A45"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
 
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="theme-color" content="#172A45" media="(prefers-color-scheme: dark)">
-        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <title>IA das Feiras</title>
 
-        <title>IA das Feiras</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="FrontEnd/chatbot/style.css" />
+  </head>
 
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="FrontEnd/chatbot/style.css">
+  <body>
+    <div class="overlay">
+      <!-- HEADER -->
 
-    </head>
+      <header>
+        <section class="hero" id="hero">
+          <h1 style="text-align: center">SF<span>AI</span></h1>
 
-    <body>
+          <p>Assistente inteligente para ajudar você a organizar seu projeto</p>
+        </section>
+      </header>
+      <!-- CHAT -->
 
-        <div class="overlay">
-
-            <!-- HEADER -->
-
-            <header>
-
-                <section class="hero" id = "hero">
-
-                <h1 style="text-align: center;">SF<span>AI</span></h1>
-
-                <p>
-                Assistente inteligente para ajudar você a organizar seu projeto
-                </p>
-
-            </section>
-
-            </header>
-            <!-- CHAT -->
-
-            <div class="chat-container" id = "chat-container">
-                <div class="chat-area" id = "chat-area">
-
-                <div class="message bot">
-                    Olá 👋  
-                    Pergunte qualquer coisa sobre as Feiras de Ciências, Horários e muito mais!
-                </div>
-
-                </div>
-
-                <div class="input-area">
-                    
-                    <div>
-                        <textarea placeholder = "O que vamos fazer hoje?" id = "user-input"  autocomplete = "off"></textarea>
-                    </div>
-
-                    <button onclick = "enviarMensagem()" class = "sla">Enviar</button>
-                </div>
-
-            </div>
-
-            <!-- SUGESTÕES -->
-
-            <div class="suggestions" id = "suggestions">
-
-                <button class = "botao" onclick = "btn(1)"">📅 Cronograma e Prazos</button>
-                <button class = "botao" onclick = "btn(2)">📊 Dados e Estatísticas</button>
-                <button class = "botao" onclick = "btn(3)">📍 Mapa dos Estandes</button>
-                <button class = "botao" onclick = "btn(4)">⚖️ Pesos da Avaliação</button>
-
-            </div>
-
-            <div class = "menu">
-
-                <div class="logo" onclick = "window.location.href = 'Layout.html'">
-                    SF<span>AI</span>
-                </div>
-
-                <div class = "browser-container">
-                    <img src = "img/browser.png" class = "browser-logo" onclick = "browser()" title = "Histórico de Conversas">
-                </div>
-                
-
-                <div class = "calculadora-container">
-                    <img src = "img/calculadora.png" class = "calculadora-img" onclick = "calculadora()" title = "Calculadora de Gastos" id = "calculadora">
-                </div>
-
-                </div>
-
-            <div class = "calculadora hidden" id = "calculadoraverdade">
-                <div class="calculadora-body">
-                    <div class="calculadora-left">
-                        <div class="calculadora-controls">
-                            <div class = "calculadora-adicionar" onclick = "adicionaraa()" id = "adicionar">Adicionar</div>
-                            <div class = "calculadora-remover" onclick = "reset()" id = "remover">Resetar</div>
-                            <button type="button" class="calculadora-toggle" id="toggleTabela">Mostrar tabela</button>
-                            <input type = "text" placeholder = "Digite seu material AQUI!" id = "materialInput" class = "materialInput">
-                            <input type = "number" step = "0.01" placeholder = "Digite o preço do material AQUI!" id = "precoInput" class = "precoInput">
-                        </div>
-                        <p class = "total" id = "total">0</p>
-
-                        <div class = "calculadora-grid" id = "calculadoraGrid"></div>
-                    </div>
-
-                    <div class="calculadora-right">
-                        <div class = "tabelaExcel hidden-tabela" id = "tabelaExcel">
-                            <div class = "inf">
-                                <p class = "nome">Material</p>
-                                <p class = "preco">Preço</p>
-                                <p class = "qtd">Quantidade</p>
-                                <p class = "total-col">Total</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class = "browser-options show" id = "hist"></div>
-
-            <footer>
-                SFAI • Assistente de Feira de ciências
-                <br>
-                <a href="javascript:void(0)" onclick = 'window.location.href = `knowMore.html?msg=${encodeURIComponent("index")}`'>➡Saiba mais</a>
-            </footer>
-
+      <div class="chat-container" id="chat-container">
+        <div class="chat-area" id="chat-area">
+          <div class="message bot">
+            Olá 👋 Pergunte qualquer coisa sobre as Feiras de Ciências, Horários
+            e muito mais!
+          </div>
         </div>
-        <script src="FrontEnd/chatbot/script.js" defer></script>
-    </body>
+
+        <div class="mode-badge" id="modeBadge"></div>
+
+        <div class="input-area">
+          <div class="feira-selector">
+            <div class="options-input-area" onclick="toggleFeiraPopup()">+</div>
+            <div class="feira-popup" id="feiraPopup">
+              <button
+                type="button"
+                class="botao"
+                onclick="selecionarFeira('FEBRACE')"
+              >
+                FEBRACE
+              </button>
+              <button
+                type="button"
+                class="botao"
+                onclick="selecionarFeira('MOSTRATEC')"
+              >
+                Mostratec
+              </button>
+            </div>
+          </div>
+          <div class="input-text">
+            <textarea
+              placeholder="O que vamos fazer hoje?"
+              id="user-input"
+              autocomplete="off"
+            ></textarea>
+          </div>
+
+          <button onclick="enviarMensagem()" class="sla">Enviar</button>
+        </div>
+      </div>
+
+      <!-- SUGESTÕES -->
+
+      <div class="suggestions" id="suggestions">
+        <button class="botao" onclick="btn(1)">📅 Cronograma e Prazos</button>
+        <button class="botao" onclick="btn(2)">📊 Dados e Estatísticas</button>
+        <button class="botao" onclick="btn(3)">📍 Mapa dos Estandes</button>
+        <button class="botao" onclick="btn(4)">⚖️ Pesos da Avaliação</button>
+      </div>
+
+      <div class="menu">
+        <div class="logo" onclick="window.location.href = 'Layout.html'">
+          SF<span>AI</span>
+        </div>
+
+        <div class="browser-container">
+          <img
+            src="img/browser.png"
+            class="browser-logo"
+            onclick="browser()"
+            title="Histórico de Conversas"
+          />
+        </div>
+
+        <div class="calculadora-container">
+          <img
+            src="img/calculadora.png"
+            class="calculadora-img"
+            onclick="calculadora()"
+            title="Calculadora de Gastos"
+            id="calculadora"
+          />
+        </div>
+      </div>
+
+      <div class="calculadora hidden" id="calculadoraverdade">
+        <div class="calculadora-body">
+          <div class="calculadora-left">
+            <div class="calculadora-controls">
+              <div
+                class="calculadora-adicionar"
+                onclick="adicionaraa()"
+                id="adicionar"
+              >
+                Adicionar
+              </div>
+              <div class="calculadora-remover" onclick="reset()" id="remover">
+                Resetar
+              </div>
+              <button
+                type="button"
+                class="calculadora-toggle"
+                id="toggleTabela"
+              >
+                Mostrar tabela
+              </button>
+              <input
+                type="text"
+                placeholder="Digite seu material AQUI!"
+                id="materialInput"
+                class="materialInput"
+              />
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Digite o preço do material AQUI!"
+                id="precoInput"
+                class="precoInput"
+              />
+            </div>
+            <p class="total" id="total">0</p>
+
+            <div class="calculadora-grid" id="calculadoraGrid"></div>
+          </div>
+
+          <div class="calculadora-right">
+            <div class="tabelaExcel hidden-tabela" id="tabelaExcel">
+              <div class="inf">
+                <p class="nome">Material</p>
+                <p class="preco">Preço</p>
+                <p class="qtd">Quantidade</p>
+                <p class="total-col">Total</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="browser-options show" id="hist"></div>
+
+      <footer>
+        SFAI • Assistente de Feira de ciências
+        <br />
+        <a
+          href="javascript:void(0)"
+          onclick="
+            window.location.href = `knowMore.html?msg=${encodeURIComponent('index')}`
+          "
+          >➡Saiba mais</a
+        >
+      </footer>
+    </div>
+    <script src="FrontEnd/chatbot/script.js" defer></script>
+  </body>
 </html>
