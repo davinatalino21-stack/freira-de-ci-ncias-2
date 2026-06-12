@@ -16,6 +16,10 @@ function atualizarModoBadge() {
     modeBadge.textContent = "🔬 Classificando para Mostratec";
   } else if (feiraSelecionada === "FEBRACE") {
     modeBadge.textContent = "🏆 Classificando para FEBRACE";
+  } else if (feiraSelecionada === "Ciências para Todos") {
+    modeBadge.textContent = "🌍 Classificando para Ciências para Todos";
+  } else if (feiraSelecionada === "12ª DIREC") {
+    modeBadge.textContent = "📊 Classificando para 12ª DIREC";
   } else {
     modeBadge.textContent = "🏷️ Classificação ativa";
   }
@@ -160,6 +164,15 @@ async function enviarMensagem() {
       `Resumo do projeto: ${userMessage}`;
   }
 
+  // Mapear para FEBRACE apenas no envio
+  let feiraMapeada = feiraSelecionada;
+  if (
+    feiraSelecionada === "Ciências para Todos" ||
+    feiraSelecionada === "12ª DIREC"
+  ) {
+    feiraMapeada = "FEBRACE";
+  }
+
   try {
     const url =
       "https://davidumbproxmax-classificador-mostratec.hf.space/classificar";
@@ -174,7 +187,7 @@ async function enviarMensagem() {
       },
       body: JSON.stringify({
         modo,
-        feira: feiraSelecionada || "",
+        feira: feiraMapeada || "",
         mensagem: userMessage,
         resumo: promptFinal,
         historico: historicoConversa,
