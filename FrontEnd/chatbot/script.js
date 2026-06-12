@@ -3,6 +3,7 @@ const input = document.getElementById("user-input");
 const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
 const modeBadge = document.getElementById("modeBadge");
+const SECRET_CLEAR_CODE = "//!!@@clearAll";
 
 function atualizarModoBadge() {
   if (!feiraSelecionada) {
@@ -48,6 +49,48 @@ function resetarAlturaTextarea() {
   input.style.height = `${Math.min(input.scrollHeight, window.innerHeight * 0.35)}px`;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function formatarRespostaIA(texto) {
+  return texto
+    .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.*)$/gm, "<h2>$1</h2>")
+    .replace(/^# (.*)$/gm, "<h1>$1</h1>")
+    .replace(/^---$/gm, "<hr>")
+    .replace(/\n/g, "<br>")
+    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+    .replace(/\*(.*?)\*/g, "<i>$1</i>");
+}
+
+async function digitarTexto(elemento, html, velocidade = 100) {
+  elemento.innerHTML = "";
+  let exibicaoParcial = "";
+  let indice = 0;
+
+  while (indice < html.length) {
+    if (html[indice] === "<") {
+      const fechamento = html.indexOf(">", indice);
+      if (fechamento === -1) {
+        exibicaoParcial += html[indice];
+        indice += 1;
+      } else {
+        exibicaoParcial += html.slice(indice, fechamento + 1);
+        indice = fechamento + 1;
+      }
+    } else {
+      exibicaoParcial += html[indice];
+      indice += 1;
+      elemento.innerHTML = exibicaoParcial;
+      elemento.parentElement.scrollTop = elemento.parentElement.scrollHeight;
+      await sleep(velocidade);
+    }
+  }
+
+  elemento.innerHTML = exibicaoParcial;
+}
+
 input.addEventListener("input", ajustarAlturaTextarea);
 ajustarAlturaTextarea();
 
@@ -66,9 +109,74 @@ let itens = [];
 let carregando = false;
 
 let historicoConversa = [];
+let chatMessages = [];
 
 function limparHistorico() {
   historicoConversa = [];
+  localStorage.removeItem("historicoConversa");
+}
+
+function limparChatSalvo() {
+  chatMessages = [];
+  historicoConversa = [];
+  localStorage.removeItem("chatMessages");
+  localStorage.removeItem("historicoConversa");
+}
+
+function salvarConversaAtual() {
+  localStorage.setItem("chatMessages", JSON.stringify(chatMessages));
+  localStorage.setItem("historicoConversa", JSON.stringify(historicoConversa));
+}
+
+function carregarConversaAtual() {
+  const dadosChat = localStorage.getItem("chatMessages");
+  const dadosHistorico = localStorage.getItem("historicoConversa");
+
+  if (dadosChat) {
+    try {
+      const mensagens = JSON.parse(dadosChat);
+      if (Array.isArray(mensagens) && mensagens.length > 0) {
+        chatMessages = mensagens;
+        mensagens.forEach((item) => {
+          const messageElement = document.createElement("div");
+          messageElement.classList.add(
+            "message",
+            item.role === "assistant" ? "bot" : "user",
+          );
+
+          if (item.role === "assistant") {
+            messageElement.innerHTML = formatarRespostaIA(item.content);
+          } else {
+            messageElement.textContent = item.content;
+          }
+
+          chatArea.appendChild(messageElement);
+        });
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+        primeiravez = false;
+
+        const chatAra = document.getElementById("hero");
+        const sug = document.getElementById("suggestions");
+        if (chatAra) chatAra.style.display = "none";
+        if (sug) sug.style.display = "none";
+      }
+    } catch (error) {
+      console.error("Erro ao carregar chat salvo:", error);
+      chatMessages = [];
+    }
+  }
+
+  if (dadosHistorico) {
+    try {
+      const historico = JSON.parse(dadosHistorico);
+      if (Array.isArray(historico)) {
+        historicoConversa = historico;
+      }
+    } catch (error) {
+      console.error("Erro ao carregar histórico salvo:", error);
+      historicoConversa = [];
+    }
+  }
 }
 
 let contexto = "";
@@ -125,6 +233,22 @@ async function enviarMensagem() {
 
   console.log("FUNCIONOU");
 
+  if (userMessage === SECRET_CLEAR_CODE) {
+    limparChatSalvo();
+    chatArea.innerHTML = "";
+    primeiravez = true;
+
+    const chatAra = document.getElementById("hero");
+    const sug = document.getElementById("suggestions");
+    if (chatAra) chatAra.style.display = "block";
+    if (sug) sug.style.display = "block";
+
+    input.value = "";
+    resetarAlturaTextarea();
+    window.location.reload();
+    return;
+  }
+
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", "user");
   messageElement.textContent = userMessage;
@@ -153,6 +277,9 @@ async function enviarMensagem() {
   aiElement.classList.add("message", "bot");
   aiElement.textContent = "pensando...";
   chatArea.appendChild(aiElement);
+
+  chatMessages.push({ role: "user", content: userMessage });
+  salvarConversaAtual();
 
   const modo = feiraSelecionada ? "classificacao" : "conversa";
 
@@ -210,23 +337,21 @@ async function enviarMensagem() {
           role: "assistant",
           content: textoIA,
         });
-
-        // Mantém somente as últimas 10 mensagens
-        if (historicoConversa.length > 10) {
-          historicoConversa = historicoConversa.slice(-10);
-        }
-
-        console.log("Histórico atual:", historicoConversa);
       }
 
-      aiElement.innerHTML = textoIA
-        .replace(/^### (.*)$/gm, "<h3>$1</h3>")
-        .replace(/^## (.*)$/gm, "<h2>$1</h2>")
-        .replace(/^# (.*)$/gm, "<h1>$1</h1>")
-        .replace(/^---$/gm, "<hr>")
-        .replace(/\n/g, "<br>")
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-        .replace(/\*(.*?)\*/g, "<i>$1</i>");
+      chatMessages.push({ role: "assistant", content: textoIA });
+      salvarConversaAtual();
+
+      // Mantém somente as últimas 10 mensagens
+      if (historicoConversa.length > 10) {
+        historicoConversa = historicoConversa.slice(-10);
+      }
+
+      console.log("Histórico atual:", historicoConversa);
+
+      const textoFormatado = formatarRespostaIA(textoIA);
+      await digitarTexto(aiElement, textoFormatado, 20);
+      salvarConversaAtual();
     } else {
       aiElement.textContent = "Erro na resposta do backend da IA.";
       console.log("Erro detalhado:", data);
@@ -721,6 +846,8 @@ function alternarTabela() {
 
 window.onload = function () {
   carregando = true;
+
+  carregarConversaAtual();
 
   const dados = localStorage.getItem("dadoscalculadora");
   const aparecertotal = document.getElementById("total");
