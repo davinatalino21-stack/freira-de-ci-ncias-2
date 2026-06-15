@@ -56,10 +56,12 @@ function sleep(ms) {
 function formatarRespostaIA(texto) {
   if (!texto) return "";
 
+  texto = texto.replace(/^[\s*•-]+\s+/gm, "");
+
   let formatado = texto
     .replace(/\*\*(.*?)\*\*/gs, "<strong>$1</strong>")
     .replace(/_([^_\n]+?)_/g, "<em>$1</em>")
-    .replace(/\*([^\*\n]+?)\*/g, "<em>$1</em>");
+    .replace(/\*(.*?)\*/g, "<em>$1</em>");
 
   return formatado
     .split(/\n\n+/)
