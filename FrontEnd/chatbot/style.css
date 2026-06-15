@@ -145,6 +145,17 @@ header {
   margin-bottom: 28px;
 }
 
+.bot ul,
+.bot ol {
+  margin: 8px 0 14px 20px;
+  padding-left: 18px;
+}
+
+.bot li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
 .user {
   background: rgb(30, 45, 67);
   color: white;
