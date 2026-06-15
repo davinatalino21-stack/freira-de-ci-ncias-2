@@ -3,7 +3,7 @@ const input = document.getElementById("user-input");
 const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
 const modeBadge = document.getElementById("modeBadge");
-const SECRET_CLEAR_CODE = "//!!@@clearAll";
+const SECRET_CLEAR_CODE = "//clearAll";
 
 function atualizarModoBadge() {
   if (!feiraSelecionada) {
@@ -64,7 +64,64 @@ function formatarRespostaIA(texto) {
     .replace(/\*(.*?)\*/g, "<i>$1</i>");
 }
 
-async function digitarTexto(elemento, html, velocidade = 100) {
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderizarCardDrive(driveUrl, driveTitle, elementoAnterior) {
+  try {
+    const card = document.createElement("div");
+    card.classList.add("drive-card");
+
+    const a = document.createElement("a");
+    a.classList.add("drive-card-link");
+    a.setAttribute("href", driveUrl);
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noopener noreferrer");
+
+    const inner = document.createElement("div");
+    inner.classList.add("drive-card-inner");
+
+    const icon = document.createElement("div");
+    icon.classList.add("drive-icon");
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = "📁";
+
+    const texts = document.createElement("div");
+    texts.classList.add("drive-texts");
+
+    const titleDiv = document.createElement("div");
+    titleDiv.classList.add("drive-title");
+    titleDiv.innerHTML = escapeHtml(driveTitle);
+
+    const subDiv = document.createElement("div");
+    subDiv.classList.add("drive-sub");
+    subDiv.textContent = "Abrir no Google Drive";
+
+    const arrow = document.createElement("div");
+    arrow.classList.add("drive-arrow");
+    arrow.textContent = "↗";
+
+    texts.appendChild(titleDiv);
+    texts.appendChild(subDiv);
+    inner.appendChild(icon);
+    inner.appendChild(texts);
+    inner.appendChild(arrow);
+    a.appendChild(inner);
+    card.appendChild(a);
+
+    elementoAnterior.after(card);
+  } catch (e) {
+    console.error("Erro criando card do Drive:", e);
+  }
+}
+
+async function digitarTexto(elemento, html, velocidade = 5) {
   elemento.innerHTML = "";
   let exibicaoParcial = "";
   let indice = 0;
@@ -83,7 +140,7 @@ async function digitarTexto(elemento, html, velocidade = 100) {
       exibicaoParcial += html[indice];
       indice += 1;
       elemento.innerHTML = exibicaoParcial;
-      elemento.parentElement.scrollTop = elemento.parentElement.scrollHeight;
+      // Removido scroll dentro do loop para evitar "puxar" o usuário a cada caractere
       await sleep(velocidade);
     }
   }
@@ -151,6 +208,11 @@ function carregarConversaAtual() {
           }
 
           chatArea.appendChild(messageElement);
+
+          // Se a mensagem do bot tem link do Drive, renderiza o card
+          if (item.role === "assistant" && item.driveUrl && item.driveTitle) {
+            renderizarCardDrive(item.driveUrl, item.driveTitle, messageElement);
+          }
         });
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
         primeiravez = false;
@@ -324,9 +386,22 @@ async function enviarMensagem() {
     const data = await response.json();
 
     if (data.resultado) {
-      const textoIA = data.resultado;
+      let textoIA = data.resultado;
 
-      // Salva histórico APENAS depois da resposta chegar
+      // Verifica se existe a tag do Drive no formato: [DRIVE_LINK: URL | TITULO]
+      const driveRegex = /\[DRIVE_LINK:\s*([^\|\]]+)\|\s*([^\]]+)\]/i;
+      const driveMatch = textoIA.match(driveRegex);
+      let driveUrl = null;
+      let driveTitle = null;
+
+      if (driveMatch) {
+        driveUrl = driveMatch[1].trim();
+        driveTitle = driveMatch[2].trim();
+        // Remove a tag inteira do texto para não exibir o código bruto ao usuário
+        textoIA = textoIA.replace(driveMatch[0], "").trim();
+      }
+
+      // Salva histórico APENAS depois da resposta chegar (usa o texto limpo)
       if (modo === "conversa") {
         historicoConversa.push({
           role: "user",
@@ -339,7 +414,12 @@ async function enviarMensagem() {
         });
       }
 
-      chatMessages.push({ role: "assistant", content: textoIA });
+      chatMessages.push({
+        role: "assistant",
+        content: textoIA,
+        driveUrl: driveUrl || null,
+        driveTitle: driveTitle || null,
+      });
       salvarConversaAtual();
 
       // Mantém somente as últimas 10 mensagens
@@ -350,7 +430,17 @@ async function enviarMensagem() {
       console.log("Histórico atual:", historicoConversa);
 
       const textoFormatado = formatarRespostaIA(textoIA);
-      await digitarTexto(aiElement, textoFormatado, 20);
+      // Rolagem única para o final do chat quando a IA começa a digitar
+      chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      await digitarTexto(aiElement, textoFormatado, 5);
+
+      // Se havia link do Drive, cria um card clicável logo abaixo do balão
+      if (driveUrl && driveTitle) {
+        renderizarCardDrive(driveUrl, driveTitle, aiElement);
+        // Rolagem para mostrar o card
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      }
+
       salvarConversaAtual();
     } else {
       aiElement.textContent = "Erro na resposta do backend da IA.";
@@ -360,11 +450,6 @@ async function enviarMensagem() {
     aiElement.textContent = "Erro de conexão com o servidor de IA!";
     console.error("Erro no Fetch:", erro);
   }
-
-  chatArea.scrollTo({
-    top: chatArea.scrollHeight,
-    behavior: "smooth",
-  });
 }
 
 function btn(entrada) {
