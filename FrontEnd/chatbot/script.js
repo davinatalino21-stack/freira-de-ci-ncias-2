@@ -54,14 +54,39 @@ function sleep(ms) {
 }
 
 function formatarRespostaIA(texto) {
-  return texto
-    .replace(/^### (.*)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.*)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.*)$/gm, "<h1>$1</h1>")
-    .replace(/^---$/gm, "<hr>")
-    .replace(/\n/g, "<br>")
-    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-    .replace(/\*(.*?)\*/g, "<i>$1</i>");
+  if (!texto) return "";
+
+  texto = texto.replace(/^[\s*•-]+\s+/gm, "");
+
+  let formatado = texto
+    .replace(/\*\*(.*?)\*\*/gs, "<strong>$1</strong>")
+    .replace(/_([^_\n]+?)_/g, "<em>$1</em>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+  return formatado
+    .split(/\n\n+/)
+    .map((bloco) => {
+      const linhas = bloco
+        .split(/\n/)
+        .map((linha) => linha.trim())
+        .filter((linha) => linha !== "");
+
+      if (linhas.length === 0) {
+        return '<div style="height: 12px;"></div>';
+      }
+
+      const conteudo = linhas
+        .map((linha, index) => {
+          if (index === 0) {
+            return `<div style="line-height: 1.6;">${linha}</div>`;
+          }
+          return `<div style="margin-top: 6px; line-height: 1.6;">${linha}</div>`;
+        })
+        .join("");
+
+      return `<div style="margin-bottom: 20px;">${conteudo}</div>`;
+    })
+    .join("");
 }
 
 function escapeHtml(str) {
@@ -432,7 +457,7 @@ async function enviarMensagem() {
       const textoFormatado = formatarRespostaIA(textoIA);
       // Rolagem única para o final do chat quando a IA começa a digitar
       chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      await digitarTexto(aiElement, textoFormatado, 5);
+      aiElement.innerHTML = textoFormatado;
 
       // Se havia link do Drive, cria um card clicável logo abaixo do balão
       if (driveUrl && driveTitle) {
