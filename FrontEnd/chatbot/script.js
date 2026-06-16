@@ -457,7 +457,7 @@ async function enviarMensagem() {
       const textoFormatado = formatarRespostaIA(textoIA);
       // Rolagem única para o final do chat quando a IA começa a digitar
       chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      aiElement.innerHTML = textoFormatado;
+      await digitarTexto(aiElement, textoFormatado, 6);
 
       // Se havia link do Drive, cria um card clicável logo abaixo do balão
       if (driveUrl && driveTitle) {
