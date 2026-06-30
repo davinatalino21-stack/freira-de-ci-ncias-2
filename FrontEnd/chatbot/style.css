@@ -12,7 +12,8 @@ a {
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   color: white;
@@ -20,17 +21,18 @@ body {
 }
 
 html {
+  width: 100%;
   overflow-x: hidden;
 }
 
 .overlay {
   display: flex;
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
   background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* HEADER */
@@ -77,10 +79,12 @@ header {
 
 .chat-container {
   position: relative;
-  height: 90%;
-  width: 80%;
-  left: 2%;
-  align-self: center;
+  width: min(1100px, 92%);
+  max-width: 1100px;
+  margin: 0 auto 1rem;
+  padding-inline: 1rem;
+  padding-inline-start: 1rem;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   overflow: visible;
@@ -95,9 +99,8 @@ header {
 .chat-area {
   flex: 1;
   min-height: 0;
-  padding: 25px;
-  overflow-y: auto;
-  z-index: 1;
+  padding: 1.25rem 1rem 0.85rem;
+  overflow-y: scroll;
 }
 
 .mode-badge {
@@ -167,66 +170,79 @@ header {
 
 .input-area {
   display: flex;
-  position: relative;
-  top: 0;
-  left: 5%;
+  flex-wrap: nowrap;
+  gap: 0.65rem;
   border-radius: 16px;
-  overflow: visible;
-  align-items: flex-end;
-  justify-content: center;
-  flex-direction: row;
-  width: 90%;
-  min-height: 10vh;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  min-height: auto;
   height: auto;
   flex-shrink: 0;
   background: rgba(0, 0, 0, 0.1);
-  padding: 0.75rem;
-  z-index: 4;
+  padding: 0.55rem 0.65rem;
+  z-index: 5;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .input-area textarea {
-  flex: 1;
+  flex: 1 1 1px;
+  min-width: 0;
   display: block;
   border: none;
   outline: none;
-  font-size: 3vh;
+  font-size: 1rem;
   background: transparent;
   resize: none;
   color: white;
-  z-index: 4;
-  min-height: 2.5rem;
-  max-height: 35vh;
-  overflow-y: auto;
+  z-index: 5;
+  min-height: 2.2rem;
   line-height: 1.4;
-  padding: 0.75rem 0.8rem;
+  padding: 0.5rem 0.7rem;
   box-sizing: border-box;
   contain: layout style paint;
   will-change: height;
 }
 
 .options-input-area {
-  height: auto;
-  width: auto;
-  padding: 1.5vh 3vh;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  min-width: 2.6rem;
+  padding: 0;
   color: white;
   border-radius: 50%;
   cursor: pointer;
   user-select: none;
-  font-size: 6vh;
-  position: relative;
-  z-index: 5;
+  font-size: 1.4rem;
+  background: transparent;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.options-input-area:hover,
+.options-input-area:focus-visible {
+  background: rgba(65, 73, 75, 0.95);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.options-input-area:active {
+  background: rgba(65, 73, 75, 0.95);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(1px);
 }
 
 .feira-selector {
   position: relative;
   display: flex;
-  align-items: flex-end;
-}
-
-.options-input-area:hover {
-  background: rgb(65, 73, 75);
-  transition: 0.3s;
+  align-items: center;
 }
 
 .feira-popup {
@@ -302,8 +318,9 @@ header {
   display: flex;
   align-items: flex-end;
   width: 100%;
-  margin-left: 1rem;
+  margin-left: 0;
   z-index: 4;
+  min-width: 0;
 }
 
 .input-area > button {
@@ -313,8 +330,10 @@ header {
   color: white;
   font-weight: 600;
   cursor: pointer;
-  height: 100px;
-  width: 100px;
+  min-height: clamp(3rem, 8vw, 4.5rem);
+  min-width: clamp(3rem, 8vw, 4.5rem);
+  width: min(100px, 16vw);
+  height: min(100px, 16vw);
   display: none;
 }
 .input-area > button:hover {
@@ -367,11 +386,14 @@ footer {
 .menu {
   display: flex;
   position: absolute;
+  top: 0;
+  left: 0;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   align-items: center;
   height: 100vh;
   width: 85px;
+  min-width: 85px;
   z-index: 4;
   flex-direction: column;
   gap: 7vh;
@@ -406,20 +428,10 @@ footer {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
   height: 100vh;
-  width: 500px;
+  width: min(100%, 500px);
+  max-width: 500px;
   overflow-y: auto;
   z-index: 1;
-}
-
-/* Drive card styles */
-.drive-card {
-  margin-top: 12px;
-  margin-bottom: 28px;
-  max-width: 90%;
-  width: fit-content;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
 }
 
 .drive-card-link {
@@ -554,15 +566,15 @@ footer {
 
 .calculadora {
   position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
-  height: 100vh;
-  width: 92.8%;
-  left: 6.2%;
+  min-height: 100vh;
+  width: min(1100px, 94%);
+  max-width: 1100px;
   opacity: 1;
-  transform: scale(1);
-  transition: 0.3s ease;
-  z-index: 2;
   padding: 1.5rem 2rem;
   box-sizing: border-box;
 }
@@ -669,7 +681,7 @@ footer {
   align-content: start;
   grid-template-columns: 1fr;
   gap: 20px;
-  max-height: 445px;
+  max-height: min(45vh, 445px);
   width: 100%;
 }
 
@@ -750,8 +762,8 @@ footer {
 .casa {
   display: grid;
   grid-template-columns:
-    minmax(220px, 2fr) minmax(140px, 1.4fr) minmax(120px, 1fr)
-    47.5px 47.5px 47.5px;
+    minmax(180px, 2fr) minmax(120px, 1.4fr) minmax(100px, 1fr)
+    repeat(3, minmax(45px, 1fr));
   align-items: center;
   text-align: center;
   width: 100%;
@@ -762,8 +774,8 @@ footer {
 .header-casa {
   display: grid;
   grid-template-columns:
-    minmax(220px, 2fr) minmax(140px, 1.4fr) minmax(120px, 1fr)
-    47.5px 47.5px 47.5px;
+    minmax(180px, 2fr) minmax(120px, 1.4fr) minmax(100px, 1fr)
+    repeat(3, minmax(45px, 1fr));
   align-items: center;
   text-align: left;
   width: 100%;
@@ -1013,11 +1025,38 @@ footer {
   }
 
   .input-area {
-    height: 10vw;
-    overflow-y: hidden;
+    height: auto;
+    overflow-y: visible;
+    padding: 0.6rem 0.8rem;
+    align-items: center;
   }
   .input-area > button {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    min-width: 3rem;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: #2ec4a6;
+    border: none;
+    box-shadow: 0 8px 20px rgba(46, 196, 166, 0.22);
+    font-size: 0.95rem;
+    color: white;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    line-height: 1;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
+  }
+  .input-area > button:hover {
+    background: #26ad8c;
+  }
+  .input-area > button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 12px rgba(46, 196, 166, 0.18);
   }
   .sla:active {
     background: #249b83;
