@@ -2,44 +2,57 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "inter", sans-serif;
+  font-family: "Inter", sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 header {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-body {
-  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
-  background-attachment: fixed;
 
-  min-height: 100vh;
-}
 footer {
   color: white;
   margin-top: 20px;
-  font-size: 14px;
+  font-size: clamp(0.85rem, 1vw, 1rem);
   display: flex;
   justify-content: center;
+  padding: 1rem 0;
 }
+
 .containerAll {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
+  padding: 1rem 0 2rem;
 }
+
 .botao {
   background: rgba(255, 255, 255, 0.05);
   color: #cbd5e1;
   border: 1px solid rgba(0, 255, 204, 0.3);
-  padding: 10px 18px;
+  padding: 0.85rem 1.2rem;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
 }
@@ -56,78 +69,75 @@ footer {
   transform: translateY(1px);
   filter: brightness(0.8);
 }
+
 .informacoesIniciais {
   color: white;
-  border-radius: 20px;
-  max-width: 600px;
-  margin: 20px;
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  width: min(100%, 720px);
+  margin: 1rem;
   display: flex;
   flex-direction: column;
   overflow: auto;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 30px;
-  border-radius: 25px;
-  gap: 3vh;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem);
+  gap: clamp(1rem, 2vw, 2rem);
 }
+
 .parr {
-  max-width: 95%;
-  position: relative;
-  left: 2.5%;
+  max-width: 100%;
   line-height: 1.8;
-  grid-column: 2;
 }
 
 .logo {
   color: white;
-  position: relative;
-  font-size: 26px;
   font-weight: 700;
   cursor: pointer;
   margin-top: 5vh;
-  font-size: 10vh;
+  font-size: clamp(2rem, 8vw, 4rem);
 }
 
 .logo span {
   color: #2ec4a6;
 }
+
 .minichat {
-  width: 350px;
+  width: min(100%, 420px);
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 20px;
-  padding: 20px;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   transition: all 0.5s ease;
 }
 
 .chat-header {
   color: #00d4ff;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
   border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-  padding-bottom: 10px;
+  padding-bottom: 0.75rem;
 }
 
 .input-resumo {
   width: 100%;
-  height: 180px; /* Altura ideal para um resumo */
+  min-height: 180px;
   background: rgba(0, 0, 212, 0.1);
   border: 1px solid rgba(0, 212, 255, 0.5);
   border-radius: 12px;
   color: white;
-  padding: 12px;
+  padding: 1rem;
   font-family: inherit;
-  font-size: 0.9rem;
-  resize: none; /* Bloqueia redimensionamento manual */
+  font-size: 0.95rem;
+  resize: none;
   outline: none;
   transition: 0.3s;
 }
@@ -142,7 +152,7 @@ footer {
   background: #00d4ff;
   color: #010816;
   border: none;
-  padding: 10px;
+  padding: 0.95rem 1rem;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
@@ -153,6 +163,7 @@ footer {
   background: #008fbb;
   transform: scale(1.02);
 }
+
 .btn-analisar:active {
   transform: scale(0.95);
   box-shadow: 0 0 15px #00d4ff;
@@ -163,6 +174,7 @@ footer {
   transition: 0.5s;
   pointer-events: none;
 }
+
 .displayTrue {
   opacity: 1;
   transition: 0.5s;
@@ -178,5 +190,23 @@ a {
   align-items: center;
   justify-content: center;
   transition: all 0.5s ease-in-out;
-  grid-template-columns: 1fr 600px 1fr;
+  grid-template-columns: 1fr minmax(280px, 700px) 1fr;
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .containerBody {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .botao {
+    width: 100%;
+    justify-content: center;
+  }
 }
