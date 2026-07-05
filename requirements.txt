@@ -1,8 +1,0 @@
-fastapi
-uvicorn
-pydantic
-transformers
-torch --extra-index-url https://pytorch.org
-google-genai
-pandas
-numpy

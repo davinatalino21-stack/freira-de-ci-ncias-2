@@ -30,15 +30,17 @@ html {
   position: relative;
   width: 100%;
   min-height: 100dvh;
+  max-height: 100vh;
   background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
   flex-direction: column;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 /* HEADER */
 
 header {
-  padding: 25px 60px;
+  padding: 25px 25px;
 }
 
 .logo {
@@ -81,26 +83,51 @@ header {
   position: relative;
   width: min(1100px, 92%);
   max-width: 1100px;
-  margin: 0 auto 1rem;
+  margin: 0 auto 0rem;
   padding-inline: 1rem;
   padding-inline-start: 1rem;
-  min-height: 60vh;
+  min-height: 25vh;
   display: flex;
   flex-direction: column;
   overflow: visible;
   color: black;
-  background: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   scroll-behavior: smooth;
   z-index: 1;
+  transition: 1s;
+}
+
+/* Expande a altura do chat quando a classe .expanded estiver presente */
+.chat-container.expanded {
+  min-height: 76vh;
+  transition: min-height 0.25s ease;
+}
+
+@media (max-width: 768px) {
+  .chat-container.expanded {
+    min-height: calc(100dvh - 10vh);
+  }
 }
 
 .chat-area {
   flex: 1;
   min-height: 0;
   padding: 1.25rem 1rem 0.85rem;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+.chat-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
 }
 
 .mode-badge {
@@ -108,12 +135,12 @@ header {
   margin: 0 25px 12px 25px;
   padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(12, 53, 78, 0.85);
   color: #d8f7ff;
   font-size: 12px;
   display: none;
+  background: transparent;
   border: 1px solid rgba(46, 196, 166, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
   cursor: pointer;
   user-select: none;
 }
@@ -122,10 +149,6 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.mode-badge.classificacao {
-  background: rgba(14, 46, 65, 0.95);
 }
 
 .message {
@@ -255,7 +278,10 @@ header {
   padding: 16px;
   min-width: 200px;
   max-height: 40vh;
-  overflow-y: scroll;
+  overflow-y: auto;
+  /* esconder a scrollbar visualmente, manter rolagem se necessário */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
   background: rgba(5, 16, 30, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
@@ -265,20 +291,7 @@ header {
 }
 
 .feira-popup::-webkit-scrollbar {
-  width: 6px;
-}
-
-.feira-popup::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.feira-popup::-webkit-scrollbar-thumb {
-  background: rgba(46, 196, 166, 0.4);
-  border-radius: 3px;
-}
-
-.feira-popup::-webkit-scrollbar-thumb:hover {
-  background: rgba(46, 196, 166, 0.6);
+  display: none; /* Safari and Chrome */
 }
 
 .feira-popup.show {
@@ -434,6 +447,10 @@ footer {
   z-index: 1;
 }
 
+.drive-card {
+  margin-bottom: 5vh;
+}
+
 .drive-card-link {
   text-decoration: none;
   color: inherit;
@@ -451,6 +468,7 @@ footer {
     rgba(15, 185, 100, 0.06)
   );
   border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
   backdrop-filter: blur(6px);
 }
 
@@ -566,9 +584,11 @@ footer {
 
 .calculadora {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  z-index: 10;
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
   min-height: 100vh;
@@ -577,34 +597,39 @@ footer {
   opacity: 1;
   padding: 1.5rem 2rem;
   box-sizing: border-box;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
 .calculadora-body {
   display: grid;
   grid-template-columns: minmax(320px, 1fr) minmax(320px, 420px);
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
   width: 100%;
 }
 
 .calculadora-left,
 .calculadora-right {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .calculadora-right {
-  display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .calculadora.hidden {
   position: absolute;
-  background-color: rgb(65, 73, 75);
-  height: 100vh;
-  width: 100vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  transform-origin: center center;
   opacity: 0;
-  transform: scale(0.2);
   pointer-events: none;
 }
 .calculadora-controls {
@@ -681,7 +706,7 @@ footer {
   align-content: start;
   grid-template-columns: 1fr;
   gap: 20px;
-  max-height: min(45vh, 445px);
+  max-height: min(71vh, 800px);
   width: 100%;
 }
 
@@ -1069,22 +1094,26 @@ footer {
   .input-area div textarea {
     font-size: 3vw;
   }
-}
 
-@media (max-width: 768px) {
+  .chat-area {
+    position: relative;
+    top: 6vh;
+    height: 80vh;
+    max-height: 80vh;
+  }
+
   .calculadora {
     position: fixed;
-    top: 7vh;
-    left: 0;
-    right: 0;
+    top: 57vh;
     width: 100%;
     max-width: 100%;
-    min-height: calc(100dvh - 90px);
-    max-height: calc(100dvh - 90px);
+    height: calc(100dvh - 10vh);
+    max-height: calc(100dvh - 10vh);
     padding: 0.5rem 0.4rem 0.8rem;
     border-radius: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     background: rgba(30, 41, 59, 0.98);
     box-sizing: border-box;
   }
@@ -1136,16 +1165,26 @@ footer {
     min-width: 0;
   }
 
+  .calculadora-left {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
   .calculadora-grid {
-    max-height: calc(100dvh - 460px);
+    overflow-y: auto;
+    height: auto;
     padding-bottom: 0.3rem;
     width: 100%;
     gap: 4px;
+    min-height: 200px;
   }
 
   .casa {
     display: grid;
-    grid-template-columns: 120px 80px 65px 40px 40px 40px;
+    grid-template-columns:
+      minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.6fr)
+      repeat(3, minmax(0, 0.5fr));
     gap: 2px;
     align-items: center;
     text-align: center;
@@ -1155,7 +1194,10 @@ footer {
   }
 
   .header-casa {
-    grid-template-columns: 120px 80px 65px 30px 30px 30px;
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.6fr)
+      repeat(3, minmax(0, 0.5fr));
     gap: 2px;
   }
 
@@ -1170,6 +1212,7 @@ footer {
     justify-content: center;
     align-items: center;
     text-align: center;
+    min-width: 0;
   }
 
   .addbtn,
@@ -1179,16 +1222,19 @@ footer {
     width: 30px;
     font-size: 14px;
     padding: 0;
+    min-width: 0;
   }
 
   .calculadora-right {
     justify-content: center;
     width: 100%;
+    min-height: 0;
   }
 
   #tabelaExcel {
     max-width: 100%;
-    max-height: 300px;
+    height: auto;
+    overflow-y: auto;
     margin-top: 0.3rem;
     width: 100%;
   }
@@ -1200,43 +1246,40 @@ footer {
   .tabelaExcel.hidden-tabela {
     display: none !important;
   }
-}
 
-@media (hover: none) {
-  .calculadora-adicionar:hover,
-  .calculadora-remover:hover,
-  .calculadora-toggle:hover,
-  .browser-container:hover,
-  .calculadora-container:hover,
-  .input-area > button:hover,
-  .suggestions button:hover,
-  .sla:hover,
-  .addbtn:hover,
-  .rmvbtn:hover,
-  .delete:hover,
-  .calculartotal:hover,
-  ::-webkit-scrollbar-thumb:hover {
-    background: inherit;
+  @media (hover: none) {
+    .browser-container:hover,
+    .calculadora-container:hover,
+    .input-area > button:hover,
+    .suggestions button:hover,
+    .sla:hover,
+    .addbtn:hover,
+    .rmvbtn:hover,
+    .delete:hover,
+    .calculartotal:hover,
+    ::-webkit-scrollbar-thumb:hover {
+      background: inherit;
+    }
+
+    .calculadora-adicionar:active,
+    .calculadora-remover:active,
+    .calculadora-toggle:active,
+    .browser-container:active,
+    .calculadora-container:active,
+    .input-area > button:active,
+    .suggestions button:active,
+    .sla:active,
+    .addbtn:active,
+    .rmvbtn:active,
+    .delete:active,
+    .calculartotal:active {
+      filter: brightness(0.92);
+      transform: translateY(1px) scale(0.99);
+    }
   }
 
-  .calculadora-adicionar:active,
-  .calculadora-remover:active,
-  .calculadora-toggle:active,
-  .browser-container:active,
-  .calculadora-container:active,
-  .input-area > button:active,
-  .suggestions button:active,
-  .sla:active,
-  .addbtn:active,
-  .rmvbtn:active,
-  .delete:active,
-  .calculartotal:active {
-    filter: brightness(0.92);
-    transform: translateY(1px) scale(0.99);
+  .overlay {
+    height: 100dvh;
+    padding-bottom: env(safe-area-inset-bottom);
   }
-}
-
-.overlay {
-  height: 100dvh;
-  padding-bottom: env(safe-area-inset-bottom);
 }

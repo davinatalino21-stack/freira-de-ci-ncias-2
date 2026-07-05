@@ -9,9 +9,4 @@ function btnf(entrada) {
     window.location.href = `index.html?msg=${encodeURIComponent("Projetos MostraTec")}`;
   }
 }
-function minichat() {
-  let minichati = document.getElementById('minichat');
-  minichati.classList.toggle('displayNone');
-  minichati.classList.toggle('displayTrue');
-
-}
+// minichat removed

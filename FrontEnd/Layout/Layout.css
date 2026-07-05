@@ -16,6 +16,10 @@ body {
   background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
   min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 header {
@@ -102,111 +106,30 @@ footer {
   color: #2ec4a6;
 }
 
-.minichat {
-  width: min(100%, 420px);
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  border-radius: 20px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: all 0.5s ease;
-}
-
-.chat-header {
-  color: #00d4ff;
-  font-size: 0.95rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-  padding-bottom: 0.75rem;
-}
-
-.input-resumo {
-  width: 100%;
-  min-height: 180px;
-  background: rgba(0, 0, 212, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.5);
-  border-radius: 12px;
-  color: white;
-  padding: 1rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  resize: none;
-  outline: none;
-  transition: 0.3s;
-}
-
-.input-resumo:focus {
-  border-color: #00d4ff;
-  background: rgba(0, 212, 255, 0.15);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
-}
-
-.btn-analisar {
-  background: #00d4ff;
-  color: #010816;
-  border: none;
-  padding: 0.95rem 1rem;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-analisar:hover {
-  background: #008fbb;
-  transform: scale(1.02);
-}
-
-.btn-analisar:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 15px #00d4ff;
-}
-
-.displayNone {
-  opacity: 0;
-  transition: 0.5s;
-  pointer-events: none;
-}
-
-.displayTrue {
-  opacity: 1;
-  transition: 0.5s;
-  pointer-events: auto;
-}
+/* minichat styles removed */
 
 a {
   color: white;
 }
 
 .containerBody {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: all 0.5s ease-in-out;
-  grid-template-columns: 1fr minmax(280px, 700px) 1fr;
   width: min(1100px, 92vw);
   margin: 0 auto;
   gap: 1.5rem;
 }
 
-@media (max-width: 900px) {
-  .containerBody {
-    grid-template-columns: 1fr;
-    width: 100%;
-    gap: 1rem;
+@media (max-width: 768px) {
+  * {
+    margin: 0;
   }
-}
-
-@media (max-width: 640px) {
-  .botao {
-    width: 100%;
+  body {
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
 }

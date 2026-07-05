@@ -38,7 +38,6 @@ function ajustarAlturaTextarea() {
   const maxHeight = window.innerHeight * 0.35;
   const newHeight = Math.min(input.scrollHeight, maxHeight);
 
-  // Only update if height actually changed
   if (input.offsetHeight !== newHeight) {
     input.style.height = `${newHeight}px`;
   }
@@ -126,7 +125,7 @@ function renderizarCardDrive(driveUrl, driveTitle, elementoAnterior) {
 
     const subDiv = document.createElement("div");
     subDiv.classList.add("drive-sub");
-    subDiv.textContent = "Abrir no Google Drive";
+    subDiv.textContent = "Abrir PDF";
 
     const arrow = document.createElement("div");
     arrow.classList.add("drive-arrow");
@@ -165,7 +164,6 @@ async function digitarTexto(elemento, html, velocidade = 5) {
       exibicaoParcial += html[indice];
       indice += 1;
       elemento.innerHTML = exibicaoParcial;
-      // Removido scroll dentro do loop para evitar "puxar" o usuário a cada caractere
       await sleep(velocidade);
     }
   }
@@ -234,18 +232,22 @@ function carregarConversaAtual() {
 
           chatArea.appendChild(messageElement);
 
-          // Se a mensagem do bot tem link do Drive, renderiza o card
           if (item.role === "assistant" && item.driveUrl && item.driveTitle) {
             renderizarCardDrive(item.driveUrl, item.driveTitle, messageElement);
           }
         });
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
         primeiravez = false;
+        if (chatContainer) chatContainer.classList.add("expanded");
 
         const chatAra = document.getElementById("hero");
         const sug = document.getElementById("suggestions");
         if (chatAra) chatAra.style.display = "none";
         if (sug) sug.style.display = "none";
+        if (window.matchMedia("(max-width: 768px)").matches) {
+          const footer = document.querySelector("footer");
+          if (footer) footer.style.display = "none";
+        }
       }
     } catch (error) {
       console.error("Erro ao carregar chat salvo:", error);
@@ -272,10 +274,8 @@ let feiraSelecionada = "";
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     if (event.shiftKey) {
-      // Shift+Enter: quebra de linha
-      return; // deixa o comportamento padrão
+      return;
     } else {
-      // Enter: enviar mensagem
       event.preventDefault();
       enviarMensagem();
     }
@@ -329,6 +329,7 @@ async function enviarMensagem() {
     const sug = document.getElementById("suggestions");
     if (chatAra) chatAra.style.display = "block";
     if (sug) sug.style.display = "block";
+    if (chatContainer) chatContainer.classList.remove("expanded");
 
     input.value = "";
     resetarAlturaTextarea();
@@ -346,15 +347,19 @@ async function enviarMensagem() {
     const chatAra = document.getElementById("hero");
     const sug = document.getElementById("suggestions");
 
-    chatAra.classList.add("fade-out1");
-    sug.classList.add("fade-out2");
+    if (chatAra) chatAra.classList.add("fade-out1");
+    if (sug) sug.classList.add("fade-out2");
 
     setTimeout(() => {
-      chatAra.style.display = "none";
-      sug.style.display = "none";
+      if (chatAra) chatAra.style.display = "none";
+      if (sug) sug.style.display = "none";
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        const footer = document.querySelector("footer");
+        if (footer) footer.style.display = "none";
+      }
     }, 500);
-
     primeiravez = false;
+    if (chatContainer) chatContainer.classList.add("expanded");
   }
 
   input.value = "";
@@ -370,28 +375,23 @@ async function enviarMensagem() {
 
   const modo = feiraSelecionada ? "classificacao" : "conversa";
 
-  let promptFinal = userMessage;
-
-  if (feiraSelecionada) {
-    promptFinal =
-      `[O usuário escolheu focar na feira: ${feiraSelecionada}]. ` +
-      `Resumo do projeto: ${userMessage}`;
-  }
-
-  // Mapear para FEBRACE apenas no envio
-  let feiraMapeada = feiraSelecionada;
+  let feiraMapeada = "";
   if (
     feiraSelecionada === "Ciências para Todos" ||
-    feiraSelecionada === "12ª DIREC"
+    feiraSelecionada === "12ª DIREC" ||
+    feiraSelecionada === "FEBRACE"
   ) {
     feiraMapeada = "FEBRACE";
+  } else if (feiraSelecionada === "MOSTRATEC") {
+    feiraMapeada = "MOSTRATEC";
   }
 
   try {
-    const url =
-      "https://davidumbproxmax-classificador-mostratec.hf.space/classificar";
+    const url = "https://davidumbproxmax-classificador-mostratec.hf.space/classificar";
 
-    console.log("Chamando a API de IA Híbrida...");
+    console.log(
+      `Chamando a API no modo [${modo}] para a feira [${feiraMapeada}]...`,
+    );
 
     const response = await fetch(url, {
       method: "POST",
@@ -400,10 +400,10 @@ async function enviarMensagem() {
         Accept: "application/json",
       },
       body: JSON.stringify({
-        modo,
-        feira: feiraMapeada || "",
+        modo: modo,
+        feira: feiraMapeada,
         mensagem: userMessage,
-        resumo: promptFinal,
+        resumo: userMessage,
         historico: historicoConversa,
       }),
     });
@@ -413,7 +413,6 @@ async function enviarMensagem() {
     if (data.resultado) {
       let textoIA = data.resultado;
 
-      // Verifica se existe a tag do Drive no formato: [DRIVE_LINK: URL | TITULO]
       const driveRegex = /\[DRIVE_LINK:\s*([^\|\]]+)\|\s*([^\]]+)\]/i;
       const driveMatch = textoIA.match(driveRegex);
       let driveUrl = null;
@@ -422,11 +421,9 @@ async function enviarMensagem() {
       if (driveMatch) {
         driveUrl = driveMatch[1].trim();
         driveTitle = driveMatch[2].trim();
-        // Remove a tag inteira do texto para não exibir o código bruto ao usuário
         textoIA = textoIA.replace(driveMatch[0], "").trim();
       }
 
-      // Salva histórico APENAS depois da resposta chegar (usa o texto limpo)
       if (modo === "conversa") {
         historicoConversa.push({
           role: "user",
@@ -447,22 +444,19 @@ async function enviarMensagem() {
       });
       salvarConversaAtual();
 
-      // Mantém somente as últimas 10 mensagens
       if (historicoConversa.length > 10) {
         historicoConversa = historicoConversa.slice(-10);
       }
 
-      console.log("Histórico atual:", historicoConversa);
+      console.log("Histórico atual enviado ao Python:", historicoConversa);
 
       const textoFormatado = formatarRespostaIA(textoIA);
-      // Rolagem única para o final do chat quando a IA começa a digitar
+
       chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
       await digitarTexto(aiElement, textoFormatado, 6);
 
-      // Se havia link do Drive, cria um card clicável logo abaixo do balão
       if (driveUrl && driveTitle) {
         renderizarCardDrive(driveUrl, driveTitle, aiElement);
-        // Rolagem para mostrar o card
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
       }
 
@@ -491,6 +485,7 @@ function btn(entrada) {
         sug.style.display = "none";
       }, 500);
       primeiravez = false;
+      if (chatContainer) chatContainer.classList.add("expanded");
     }
     input.value = "";
   } else if (entrada == 2) {
@@ -506,6 +501,7 @@ function btn(entrada) {
         sug.style.display = "none";
       }, 500);
       primeiravez = false;
+      if (chatContainer) chatContainer.classList.add("expanded");
     }
     input.value = "";
   } else if (entrada == 3) {
@@ -521,6 +517,7 @@ function btn(entrada) {
         sug.style.display = "none";
       }, 500);
       primeiravez = false;
+      if (chatContainer) chatContainer.classList.add("expanded");
     }
     input.value = "";
   } else if (entrada == 4) {
@@ -536,6 +533,7 @@ function btn(entrada) {
         sug.style.display = "none";
       }, 500);
       primeiravez = false;
+      if (chatContainer) chatContainer.classList.add("expanded");
     }
     input.value = "";
   }
@@ -588,6 +586,7 @@ if (mensagemInicial) {
       sug.style.display = "none";
     }, 500);
     primeiravez = false;
+    if (chatContainer) chatContainer.classList.add("expanded");
   }
   input.value = "";
 }
@@ -614,7 +613,7 @@ document.getElementById("materialInput").addEventListener("keydown", (e) => {
 
   if (e.key === "Enter") {
     if (materialinput.value !== "" && precoinput.value !== "") {
-      adicionarMaterial().classList.add("pareceuu");
+      adicionarMaterial();
       salvarcalculadora();
       calcularTotal();
     } else {
@@ -1014,9 +1013,8 @@ function renderTabelaExcel() {
     const linha = document.createElement("div");
     linha.classList.add("linha-excel");
 
-    // Criamos os elementos internos manualmente para usar textContent
     const divNome = document.createElement("div");
-    divNome.textContent = item.nome; // <--- ISSO AQUI É A CHAVE DA SEGURANÇA
+    divNome.textContent = item.nome;
 
     const divPreco = document.createElement("div");
     divPreco.textContent = Number(item.preco).toFixed(2).replace(".", ",");
@@ -1029,7 +1027,6 @@ function renderTabelaExcel() {
       .toFixed(2)
       .replace(".", ",");
 
-    // Adicionamos as colunas na linha
     linha.appendChild(divNome);
     linha.appendChild(divPreco);
     linha.appendChild(divQtd);
