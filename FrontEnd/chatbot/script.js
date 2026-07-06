@@ -14,13 +14,13 @@ function atualizarModoBadge() {
 
   modeBadge.classList.add("show", "classificacao");
   if (feiraSelecionada === "MOSTRATEC") {
-    modeBadge.textContent = "🔬 Classificando para Mostratec";
+    modeBadge.textContent = "Classificar para Mostratec";
   } else if (feiraSelecionada === "FEBRACE") {
-    modeBadge.textContent = "🏆 Classificando para FEBRACE";
+    modeBadge.textContent = "Classificar para Febrace";
   } else if (feiraSelecionada === "Ciências para Todos") {
-    modeBadge.textContent = "🌍 Classificando para Ciências para Todos";
+    modeBadge.textContent = "Classificar para Ciências para Todos";
   } else if (feiraSelecionada === "12ª DIREC") {
-    modeBadge.textContent = "📊 Classificando para 12ª DIREC";
+    modeBadge.textContent = "Classificar para 12ª Direc";
   } else {
     modeBadge.textContent = "🏷️ Classificação ativa";
   }
@@ -297,7 +297,12 @@ function selecionarFeira(opcao) {
   document.getElementById("feiraPopup").classList.remove("show");
 
   if (feiraSelecionada) {
-    input.placeholder = `Pergunte sobre ${feiraSelecionada}`;
+    let feiraSlecionadaLowerCase = "";
+    if(feiraSelecionada == "MOSTRATEC") {feiraSlecionadaLowerCase = "Mostratec"}
+    else if(feiraSelecionada == "FEBRACE") {feiraSlecionadaLowerCase = "Febrace"}
+    else if(feiraSelecionada == "Ciências para Todos") {feiraSlecionadaLowerCase = feiraSelecionada}
+    else if(feiraSelecionada == "12ª DIREC") {feiraSlecionadaLowerCase = "12ª Direc"}
+    input.placeholder = `${feiraSlecionadaLowerCase}`;
   } else {
     input.placeholder = "O que vamos fazer hoje?";
   }
