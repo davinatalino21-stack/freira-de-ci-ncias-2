@@ -14,8 +14,8 @@ body {
 }
 
 body {
-  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
-  color: white;
+  background: var(--background);
+  color: var(--text);
 }
 
 main {
@@ -45,10 +45,11 @@ main img {
   max-width: 100%;
   text-align: justify;
   font-size: clamp(1rem, 2vw, 1.15rem);
-  background: rgba(10, 25, 47, 0.8);
+  background: var(--surface);
   backdrop-filter: blur(10px);
   padding: clamp(2rem, 4vw, 4rem);
   border-radius: clamp(1.5rem, 4vw, 2rem);
+  border: 1px solid var(--border);
   gap: clamp(1.5rem, 3vw, 2.5rem);
   line-height: 1.7;
   z-index: 2;
@@ -56,7 +57,7 @@ main img {
 
 .hero {
   width: 100%;
-  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  border-left: 2px solid var(--border);
   padding-left: 1rem;
 }
 
@@ -65,9 +66,9 @@ main img {
 }
 
 .botao {
-  background: rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
-  border: 1px solid rgba(0, 255, 204, 0.3);
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
   padding: clamp(0.8rem, 2vw, 1rem) clamp(1.2rem, 2vw, 1.4rem);
   border-radius: 10px;
   font-size: clamp(1rem, 2vw, 1.2rem);
@@ -80,20 +81,20 @@ main img {
 }
 
 .botao:hover {
-  background: rgba(0, 255, 204, 0.1);
-  border-color: #00ffcc;
-  color: white;
-  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+  background: var(--surface-hover);
+  border-color: var(--primary-solid);
+  color: var(--text);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
   transform: translateY(-2px);
 }
 
 .botao:active {
   transform: translateY(1px);
-  filter: brightness(0.8);
+  filter: brightness(0.92);
 }
 
 a {
-  color: white;
+  color: var(--primary-solid);
   font-size: clamp(1rem, 2vw, 1.1rem);
 }
 
@@ -124,10 +125,10 @@ a {
   flex-direction: column;
   justify-content: flex-start;
   text-align: center;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border);
   border-radius: clamp(1rem, 2.5vw, 1.5rem);
   padding: clamp(1rem, 2vw, 1.5rem);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface);
   overflow: hidden;
   flex: 1 1 250px;
   min-width: 240px;
@@ -138,7 +139,7 @@ a {
 .firstBenefit h4,
 .secondBenefit h4,
 .thirdBenefit h4 {
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border);
   border-radius: clamp(0.75rem, 2vw, 1rem);
   padding: clamp(0.75rem, 1.5vw, 1rem);
   min-height: clamp(6rem, 12vw, 8rem);
@@ -158,7 +159,7 @@ a {
 .secondBenefit:hover,
 .thirdBenefit:hover {
   transform: translateY(-5px);
-  border-color: #00d4ff;
+  border-color: var(--primary-solid);
   transition: 0.3s;
 }
 
@@ -199,4 +200,47 @@ a {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ===== Dark theme overrides ===== */
+[data-theme="dark"] body {
+  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
+  color: white;
+}
+[data-theme="dark"] .heroContainer {
+  background: rgba(10, 25, 47, 0.8);
+  border: none;
+}
+[data-theme="dark"] .hero {
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
+}
+[data-theme="dark"] .botao {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  border: 1px solid rgba(0, 255, 204, 0.3);
+}
+[data-theme="dark"] .botao:hover {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: #00ffcc;
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+[data-theme="dark"] a {
+  color: white;
+}
+[data-theme="dark"] .firstBenefit,
+[data-theme="dark"] .secondBenefit,
+[data-theme="dark"] .thirdBenefit {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+[data-theme="dark"] .firstBenefit h4,
+[data-theme="dark"] .secondBenefit h4,
+[data-theme="dark"] .thirdBenefit h4 {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .firstBenefit:hover,
+[data-theme="dark"] .secondBenefit:hover,
+[data-theme="dark"] .thirdBenefit:hover {
+  border-color: #00d4ff;
 }

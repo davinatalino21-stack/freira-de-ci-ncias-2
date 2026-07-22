@@ -13,7 +13,8 @@ body {
 }
 
 body {
-  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
+  background: var(--background);
+  color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
   display: flex;
@@ -29,12 +30,16 @@ header {
 }
 
 footer {
-  color: white;
+  color: var(--text-secondary);
   margin-top: 20px;
   font-size: clamp(0.85rem, 1vw, 1rem);
   display: flex;
   justify-content: center;
   padding: 1rem 0;
+}
+
+footer a {
+  color: var(--primary-solid);
 }
 
 .containerAll {
@@ -47,9 +52,9 @@ footer {
 }
 
 .botao {
-  background: rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
-  border: 1px solid rgba(0, 255, 204, 0.3);
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
   padding: 0.85rem 1.2rem;
   border-radius: 10px;
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
@@ -62,29 +67,29 @@ footer {
 }
 
 .botao:hover {
-  background: rgba(0, 255, 204, 0.1);
-  border-color: #00ffcc;
-  color: white;
-  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+  background: var(--surface-hover);
+  border-color: var(--primary-solid);
+  color: var(--text);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
   transform: translateY(-2px);
 }
 
 .botao:active {
   transform: translateY(1px);
-  filter: brightness(0.8);
+  filter: brightness(0.92);
 }
 
 .informacoesIniciais {
-  color: white;
+  color: var(--text);
   border-radius: clamp(1.25rem, 3vw, 2rem);
   width: min(100%, 720px);
   margin: 1rem;
   display: flex;
   flex-direction: column;
   overflow: auto;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   padding: clamp(1.5rem, 2.5vw, 2.5rem);
   gap: clamp(1rem, 2vw, 2rem);
 }
@@ -92,10 +97,11 @@ footer {
 .parr {
   max-width: 100%;
   line-height: 1.8;
+  color: var(--text-secondary);
 }
 
 .logo {
-  color: white;
+  color: var(--text);
   font-weight: 700;
   cursor: pointer;
   margin-top: 5vh;
@@ -109,7 +115,7 @@ footer {
 /* minichat styles removed */
 
 a {
-  color: white;
+  color: var(--primary-solid);
 }
 
 .containerBody {
@@ -132,4 +138,41 @@ a {
     align-items: center;
     justify-content: center;
   }
+}
+
+/* ===== Dark theme overrides ===== */
+[data-theme="dark"] body {
+  background: linear-gradient(34deg, rgb(10, 25, 47), rgb(23, 42, 69));
+  color: white;
+}
+[data-theme="dark"] footer {
+  color: white;
+}
+[data-theme="dark"] footer a {
+  color: #e5e7eb;
+}
+[data-theme="dark"] .botao {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  border: 1px solid rgba(0, 255, 204, 0.3);
+}
+[data-theme="dark"] .botao:hover {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: #00ffcc;
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+[data-theme="dark"] .informacoesIniciais {
+  color: white;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .parr {
+  color: white;
+}
+[data-theme="dark"] .logo {
+  color: white;
+}
+[data-theme="dark"] a {
+  color: white;
 }

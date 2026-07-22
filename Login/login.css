@@ -2,144 +2,321 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
-html,
-body {
-  width: 100%;
-  min-height: 100%;
+body,
+html {
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-  background: radial-gradient(circle at center, #0d1b2a 0%, #020c1b 100%);
-  color: white;
-  overflow-x: hidden;
+header {
+  margin-top: -6rem;
+  padding: 0 clamp(1rem, 2vw, 1.5rem) 0;
+  background-color: transparent;
 }
 
-main {
-  width: 100%;
+.hero {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: clamp(0.4rem, 1vw, 0.6rem);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f8fbff;
+}
+
+.hero span {
+  color: #34d1bf;
+}
+
+.auth-page {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
-
-main > div {
-  width: min(520px, 100%);
-  background: rgba(41, 24, 152, 0.22);
-  border: 3px outset rgba(50, 120, 255, 0.5);
-  border-radius: 1rem;
+  min-height: 100dvh;
+  width: 100%;
+  background: linear-gradient(135deg, #081525 0%, #102a43 45%, #1d4e89 100%);
+  color: #0f172a;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(0.75rem, 2vw, 1.1rem);
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: clamp(0.3rem, 0.8vw, 0.45rem);
   width: 100%;
+}
+
+.login-panel form {
+  gap: clamp(0.6rem, 1.2vw, 0.8rem);
+}
+
+.corpo-do-login {
+  width: min(92%, 26rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  box-shadow: 0 20px 60px rgba(2, 8, 23, 0.35);
+  backdrop-filter: blur(18px);
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.auth-forms {
+  position: relative;
+  width: 100%;
+  transition: min-height 0.35s ease;
+}
+
+.auth-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(1.5rem);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.auth-panel.is-active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 label {
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-weight: 600;
+  color: #1f2937;
 }
 
-input,
-select {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(0, 86, 178, 0.7);
-  font-size: 1rem;
-  background: beige;
-}
-
-button {
-  width: 100%;
-  padding: 0.95rem 1rem;
-  border: 1px solid rgba(0, 86, 178, 0.8);
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  padding: clamp(0.7rem, 1.4vw, 0.9rem) clamp(0.8rem, 1.6vw, 1rem);
+  border: 1px solid #cbd5e1;
+  border-radius: 0.8rem;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  outline: none;
   transition:
-    background 0.3s ease,
-    transform 0.3s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-.logo {
-  color: beige;
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: 700;
-  cursor: default;
-  display: inline-flex;
+.senha-wrapper {
+  position: relative;
+  display: flex;
   align-items: center;
+  width: 100%;
 }
 
-.logo span {
-  color: #2ec5a6;
+.senha-wrapper input {
+  width: 100%;
+  padding-right: 3rem;
 }
 
-a,
-p {
-  color: white;
-  font-size: 0.95rem;
-  text-decoration: none;
+.toggle-senha {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  color: #64748b;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  margin: 0;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.toggle-senha svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggle-senha:hover {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+input:focus {
+  border-color: #34d1bf;
+  box-shadow: 0 0 0 4px rgba(52, 209, 191, 0.18);
+  transform: translateY(-1px);
+}
+
+.input-error {
+  border-color: #dc2626;
 }
 
 .a2 {
-  color: #cbd5e1;
-  margin-top: 0.25rem;
-  display: inline-flex;
+  margin-top: 4px;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  text-align: right;
+  color: #2563eb;
+  text-decoration: none;
 }
 
-.checkbox,
-.label3 {
+.a2:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+label[for="lembrarLogin"] {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0;
+  gap: 8px;
+  font-weight: 500;
+  color: #475569;
+  margin-top: 6px;
 }
 
 .checkbox {
-  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #34d1bf;
 }
 
-.label4 {
+.btn-entrar {
   margin-top: 0.5rem;
+  padding: clamp(0.8rem, 1.6vw, 1rem) 1rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #34d1bf 0%, #2563eb 100%);
+  color: white;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 2vw, 1rem);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-entrar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.btn-entrar:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
+.field-error {
+  min-height: 0.9rem;
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: -0.2rem;
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.switch-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-link:hover {
+  text-decoration: underline;
+}
+
+#buttonDiv {
+  margin-top: clamp(0.6rem, 1.2vw, 0.8rem);
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    padding: clamp(0.5rem, 3vw, 0.8rem);
+    justify-content: safe center;
+  }
 }
 
 @media (max-width: 480px) {
-  main {
-    padding: 1rem;
+  .corpo-do-login {
+    padding: 0.9rem;
+    width: 96%;
+    border-radius: 1rem;
   }
 
-  main > div {
-    padding: 1rem;
+  label {
+    font-size: 0.85rem;
   }
 
-  input,
-  select,
-  button,
-  a,
-  p {
-    font-size: 0.95rem;
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    padding: 0.75rem 0.85rem;
+    font-size: 16px;
+  }
+
+  .btn-entrar {
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+  }
+
+  .toggle-senha {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .auth-switch {
+    margin-top: 0.8rem;
+  }
+
+  .switch-link {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .corpo-do-login {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .a2 {
+    font-size: 0.78rem;
+  }
+
+  .switch-link {
+    font-size: 0.8rem;
+  }
+
+  .field-error {
+    font-size: 0.75rem;
+    min-height: 0.7rem;
   }
 }

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e7f0ff" />
+    <title>Meu Perfil | SFAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="Theme/theme.js" defer></script>
+    <link rel="stylesheet" href="Theme/theme.css" />
+    <link rel="stylesheet" href="Profile/profile.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="page-header">
+        <button type="button" class="back-button" id="backButton">
+          ← Voltar
+        </button>
+        <div>
+          <p class="eyebrow">Meu Perfil</p>
+          <h1>Informações da conta</h1>
+          <p class="page-description">
+            Visualize seus dados, segurança e mudanças rápidas de perfil.
+          </p>
+        </div>
+      </header>
+
+      <section class="grid-layout">
+        <article class="overview-card">
+          <div class="profile-summary">
+            <div id="profileAvatar" class="profile-avatar"></div>
+            <div>
+              <p class="label">Olá,</p>
+              <h2 id="profileName">Usuário</h2>
+              <p id="profileEmail" class="subtext">email@exemplo.com</p>
+            </div>
+          </div>
+
+          <div class="profile-badges">
+            <div class="pill">Conta SFAI</div>
+            <div class="pill pill-soft">Segurança alta</div>
+          </div>
+
+          <div class="overview-actions">
+            <button id="editProfileButton" class="btn-primary">
+              Editar Perfil
+            </button>
+            <button id="logoutFromProfile" class="btn-secondary">Sair</button>
+          </div>
+
+          <div class="info-block">
+            <div>
+              <span class="info-label">Método de login</span>
+              <strong id="profileLoginMethod">Conta SFAI</strong>
+            </div>
+            <div>
+              <span class="info-label">Criado em</span>
+              <strong id="profileCreatedAt">Não disponível</strong>
+            </div>
+            <div>
+              <span class="info-label">ID do usuário</span>
+              <strong id="profileId">-</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="security-card">
+          <div class="card-title">
+            <span class="card-icon">🔒</span>
+            <div>
+              <h3>Segurança da conta</h3>
+              <p>Veja se sua conta está protegida e como ela foi criada.</p>
+            </div>
+          </div>
+
+          <div class="security-status-card">
+            <span class="security-status">✓</span>
+            <div>
+              <p class="security-text" id="securityText">
+                Conta protegida por senha
+              </p>
+              <p class="security-note" id="securityNote">
+                O email não pode ser alterado aqui.
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div id="editProfileModal" class="modal-overlay hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div>
+              <p class="eyebrow">Editar Perfil</p>
+              <h2>Atualize seu nome e avatar</h2>
+            </div>
+            <button type="button" class="icon-button" id="closeModalButton">
+              ✕
+            </button>
+          </div>
+
+          <form id="editProfileForm" class="form-grid">
+            <div class="form-field">
+              <label for="editName">Nome completo</label>
+              <input type="text" id="editName" name="name" />
+            </div>
+            <div class="form-field">
+              <label for="editAvatarUrl">Foto de perfil</label>
+              <input type="url" id="editAvatarUrl" name="avatarUrl" />
+              <p class="field-note" id="avatarFieldNote">
+                Apenas contas SFAI podem atualizar a foto diretamente.
+              </p>
+            </div>
+            <div class="form-footer">
+              <button type="button" class="btn-secondary" id="cancelEditButton">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="Profile/profile.js" defer></script>
+  </body>
+</html>

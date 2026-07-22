@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e7f0ff" />
+    <title>Configurações | SFAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="Theme/theme.js" defer></script>
+    <link rel="stylesheet" href="Theme/theme.css" />
+    <link rel="stylesheet" href="Settings/settings.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="page-header">
+        <button type="button" class="back-button" id="backButton">
+          ← Voltar
+        </button>
+        <div>
+          <p class="eyebrow">Configurações</p>
+          <h1>Ajustes do SFAI</h1>
+          <p class="page-description">
+            Personalize aparência, comportamento e sua conta de forma segura.
+          </p>
+        </div>
+      </header>
+
+      <section class="settings-grid">
+        <article class="settings-card">
+          <div class="card-title">
+            <span class="card-icon">🎨</span>
+            <div>
+              <h2>Aparência</h2>
+              <p>Controle o tema e estilo do ambiente de trabalho.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="settings-row">
+              <div>
+                <p class="label">Tema escuro</p>
+                <p class="field-note">
+                  Ative para manter o visual escuro em todo o app.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="themeToggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article class="settings-card">
+          <div class="card-title">
+            <span class="card-icon">🤖</span>
+            <div>
+              <h2>Assistente</h2>
+              <p>Defina como o chatbot deve responder e salvar seu trabalho.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="settings-row">
+              <div>
+                <p class="label">Mostrar animação de digitação</p>
+              </div>
+              <label class="switch">
+                <input id="typingAnimationToggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <p class="label">Enviar com Enter</p>
+              </div>
+              <label class="switch">
+                <input id="enterSendToggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <p class="label">Salvar histórico automaticamente</p>
+              </div>
+              <label class="switch">
+                <input id="autoSaveHistoryToggle" type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <button id="clearHistoryButton" class="btn-secondary btn-block">
+              Limpar histórico do chat
+            </button>
+          </div>
+        </article>
+
+        <article class="settings-card">
+          <div class="card-title">
+            <span class="card-icon">👤</span>
+            <div>
+              <h2>Conta</h2>
+              <p>Gerencie login, conexões e proteções da sua conta.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="settings-row split-row">
+              <div>
+                <p class="label">Nome</p>
+                <p id="settingsAccountName" class="field-value">Usuário</p>
+              </div>
+              <div>
+                <p class="label">Email</p>
+                <p id="settingsAccountEmail" class="field-value">
+                  email@exemplo.com
+                </p>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <p class="label">Método de login</p>
+                <p id="settingsAccountMethod" class="field-value">Conta SFAI</p>
+              </div>
+            </div>
+            <div class="button-grid">
+              <button id="changePasswordButton" class="btn-primary btn-block">
+                Alterar senha
+              </button>
+              <button id="linkGoogleButton" class="btn-primary btn-block">
+                Vincular Google
+              </button>
+              <button id="unlinkGoogleButton" class="btn-secondary btn-block">
+                Desvincular Google
+              </button>
+              <button id="deleteAccountButton" class="btn-danger btn-block">
+                Excluir conta
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="settings-card">
+          <div class="card-title">
+            <span class="card-icon">🚪</span>
+            <div>
+              <h2>Sessão</h2>
+              <p>Controle o acesso atual e a gestão de dispositivos.</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <button id="logoutButton" class="btn-secondary btn-block">
+              Sair
+            </button>
+            <button id="logoutAllButton" class="btn-secondary btn-block">
+              Sair de todos os dispositivos
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <div id="confirmModal" class="modal-overlay hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div>
+              <p class="eyebrow">Confirmar exclusão</p>
+              <h2>Excluir conta</h2>
+            </div>
+            <button
+              type="button"
+              class="icon-button"
+              id="closeDeleteModalButton"
+            >
+              ✕
+            </button>
+          </div>
+          <p class="modal-description">
+            Ao confirmar, sua conta será marcada para exclusão no backend. Esta
+            ação ainda não será executada.
+          </p>
+          <div class="modal-actions">
+            <button id="cancelDeleteButton" class="btn-secondary">
+              Cancelar
+            </button>
+            <button id="confirmDeleteButton" class="btn-danger">
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="Settings/settings.js" defer></script>
+  </body>
+</html>

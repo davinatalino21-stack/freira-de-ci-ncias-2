@@ -14,13 +14,16 @@
       media="(prefers-color-scheme: light)"
     />
 
-    <title>IA das Feiras</title>
+    <title>SFAI</title>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="Theme/theme.js" defer></script>
+    <link rel="stylesheet" href="Theme/theme.css" />
     <link rel="stylesheet" href="FrontEnd/chatbot/style.css" />
+    <link rel="icon" type="image/png" href="img\favicon.png" />
   </head>
 
   <body>
@@ -94,35 +97,39 @@
 
       <!-- SUGESTÕES -->
 
-      <div class="suggestions" id="suggestions">
-        <button class="botao" onclick="btn(1)">📅 Cronograma e Prazos</button>
-        <button class="botao" onclick="btn(2)">📊 Dados e Estatísticas</button>
-        <button class="botao" onclick="btn(3)">📍 Mapa dos Estandes</button>
-        <button class="botao" onclick="btn(4)">⚖️ Pesos da Avaliação</button>
-      </div>
-
       <div class="menu">
         <div class="logo" onclick="window.location.href = 'Layout.html'">
           SF<span>AI</span>
         </div>
 
-        <div class="browser-container">
-          <img
-            src="img/browser.png"
-            class="browser-logo"
-            onclick="browser()"
-            title="Histórico de Conversas"
-          />
+        <div class="browser-container" onclick="browser()" title="Histórico de Conversas">
+          <svg class="browser-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
         </div>
 
-        <div class="calculadora-container">
-          <img
-            src="img/calculadora.png"
-            class="calculadora-img"
-            onclick="calculadora()"
-            title="Calculadora de Gastos"
-            id="calculadora"
-          />
+        <div class="faq-container" onclick="toggleFaq()" title="Perguntas Frequentes">
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+
+        <div class="calculadora-container" onclick="calculadora()" title="Calculadora de Gastos" id="calculadora">
+          <svg class="calculadora-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"/>
+            <line x1="8" y1="6" x2="16" y2="6"/>
+            <line x1="8" y1="10" x2="8" y2="10.01"/>
+            <line x1="12" y1="10" x2="12" y2="10.01"/>
+            <line x1="16" y1="10" x2="16" y2="10.01"/>
+            <line x1="8" y1="14" x2="8" y2="14.01"/>
+            <line x1="12" y1="14" x2="12" y2="14.01"/>
+            <line x1="16" y1="14" x2="16" y2="14.01"/>
+            <line x1="8" y1="18" x2="8" y2="18.01"/>
+            <line x1="12" y1="18" x2="16" y2="18"/>
+          </svg>
         </div>
       </div>
 
@@ -178,7 +185,26 @@
           </div>
         </div>
       </div>
-      <div class="browser-options show" id="hist"></div>
+      <div class="browser-options show" id="hist">
+        <div class="hist-header">
+          <h3>Histórico</h3>
+          <button class="hist-new-chat" id="btnNewChat" title="Nova conversa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova conversa
+          </button>
+        </div>
+        <div class="hist-list" id="histList"></div>
+        <div class="hist-empty" id="histEmpty" style="display:none;">
+          <p>Nenhuma conversa ainda.</p>
+        </div>
+      </div>
+
+      <div class="browser-options show" id="faqPanel">
+        <div class="hist-header">
+          <h3>Perguntas Frequentes</h3>
+        </div>
+        <div class="hist-list" id="faqList"></div>
+      </div>
 
       <footer>
         SFAI • Assistente de Feira de ciências
@@ -192,6 +218,51 @@
         >
       </footer>
     </div>
+
+    <div
+      id="user-menu-widget"
+      class="user-menu-widget"
+      aria-label="Menu do usuário"
+    >
+      <button
+        id="userMenuButton"
+        class="user-menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-haspopup="true"
+      >
+        <span
+          id="userMenuIcon"
+          class="user-menu-icon user-menu-initials"
+        ></span>
+      </button>
+
+      <div
+        id="userMenuDropdown"
+        class="user-menu-dropdown"
+        role="menu"
+        aria-hidden="true"
+      >
+        <div class="user-menu-header">
+          <div id="userMenuHeaderAvatar" class="user-menu-header-avatar"></div>
+          <div id="userMenuName" class="user-menu-name"></div>
+          <div id="userMenuEmail" class="user-menu-email"></div>
+        </div>
+
+        <div class="user-menu-actions">
+          <button class="user-menu-item" type="button" data-action="profile">
+            <span class="user-menu-item-title">Meu Perfil</span>
+          </button>
+          <button class="user-menu-item" type="button" data-action="settings">
+            <span class="user-menu-item-title">Configurações</span>
+          </button>
+          <button class="user-menu-item" type="button" data-action="logout">
+            <span class="user-menu-item-title">Sair</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="FrontEnd/chatbot/script.js" defer></script>
   </body>
 </html>

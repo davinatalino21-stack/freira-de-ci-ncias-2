@@ -4,6 +4,181 @@ const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
 const modeBadge = document.getElementById("modeBadge");
 const SECRET_CLEAR_CODE = "//clearAll";
+const driveRegex = /\[DRIVE_LINK:\s*([^\|\]]+)\|\s*([^\]]+)\]/i;
+
+const token = localStorage.getItem("token");
+
+const getUserData = () => {
+  const rawUser = localStorage.getItem("usuario");
+  if (!rawUser) {
+    return null;
+  }
+  try {
+    return JSON.parse(rawUser);
+  } catch (error) {
+    console.error("Falha ao ler usuário do localStorage:", error);
+    return null;
+  }
+};
+
+const getUserInitials = (name) => {
+  const parts = String(name || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (!parts.length) {
+    return "US";
+  }
+
+  const initials =
+    parts.length === 1
+      ? parts[0].slice(0, 2)
+      : `${parts[0][0]}${parts[parts.length - 1][0]}`;
+
+  return initials.toUpperCase();
+};
+
+const closeUserMenu = () => {
+  const button = document.getElementById("userMenuButton");
+  const dropdown = document.getElementById("userMenuDropdown");
+  if (dropdown && dropdown.classList.contains("is-open")) {
+    dropdown.classList.remove("is-open");
+  }
+  if (button) {
+    button.setAttribute("aria-expanded", "false");
+  }
+  if (dropdown) {
+    dropdown.setAttribute("aria-hidden", "true");
+  }
+};
+
+const toggleUserMenu = () => {
+  const button = document.getElementById("userMenuButton");
+  const dropdown = document.getElementById("userMenuDropdown");
+  if (!button || !dropdown) {
+    return;
+  }
+
+  const isOpen = dropdown.classList.toggle("is-open");
+  button.setAttribute("aria-expanded", String(isOpen));
+  dropdown.setAttribute("aria-hidden", String(!isOpen));
+};
+
+const populateUserMenu = () => {
+  const user = getUserData();
+  const headerAvatar = document.getElementById("userMenuHeaderAvatar");
+  const icon = document.getElementById("userMenuIcon");
+  const nameElement = document.getElementById("userMenuName");
+  const emailElement = document.getElementById("userMenuEmail");
+
+  if (!user || !nameElement || !emailElement || !headerAvatar || !icon) {
+    return;
+  }
+
+  nameElement.textContent = user.nome || "Usuário";
+  emailElement.textContent = user.email || "";
+
+  const initials = getUserInitials(user.nome);
+
+  if (user.foto) {
+    console.log("Foto:", user.foto);
+    const safeUrl = user.foto;
+    console.log("Safe:", safeUrl);
+    const existingHeaderImg = headerAvatar.querySelector("img");
+    if (
+      !existingHeaderImg ||
+      existingHeaderImg.getAttribute("src") !== safeUrl
+    ) {
+      const img = document.createElement("img");
+      img.alt = "Foto do usuário";
+      img.src = safeUrl;
+
+      headerAvatar.replaceChildren(img);
+    }
+    const existingIconImg = icon.querySelector("img");
+    if (!existingIconImg || existingIconImg.getAttribute("src") !== safeUrl) {
+      const img = document.createElement("img");
+      img.alt = "Avatar do usuário";
+      img.src = safeUrl;
+
+      icon.replaceChildren(img);
+    }
+  } else {
+    const existingInitials = headerAvatar.querySelector(
+      ".user-menu-header-initials",
+    );
+    if (!existingInitials || existingInitials.textContent !== initials) {
+      headerAvatar.innerHTML = `<span class="user-menu-header-initials">${initials}</span>`;
+    }
+    if (icon.textContent !== initials) icon.textContent = initials;
+  }
+};
+
+const handleUserMenuAction = (action) => {
+  closeUserMenu();
+
+  if (action === "logout") {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.location.href = "Login/login.html";
+    return;
+  }
+
+  if (action === "profile") {
+    window.location.href = "profile.html";
+    return;
+  }
+
+  if (action === "settings") {
+    window.location.href = "settings.html";
+    return;
+  }
+
+  if (action === "history") {
+    browser();
+  }
+};
+
+const initUserMenu = () => {
+  console.log("Menu carregado");
+
+  const button = document.getElementById("userMenuButton");
+  const dropdown = document.getElementById("userMenuDropdown");
+  const actions = document.querySelectorAll(".user-menu-item");
+
+  console.log("Botão encontrado:", button);
+  console.log("Dropdown encontrado:", dropdown);
+  console.log("Ações encontradas:", actions.length);
+
+  if (!button) {
+    console.error("Botão do menu do usuário não encontrado.");
+    return;
+  }
+
+  if (!dropdown) {
+    console.error("Dropdown do menu do usuário não encontrado.");
+  }
+
+  button.addEventListener("click", (event) => {
+    console.log("Clique detectado no botão do menu do usuário");
+    event.stopPropagation();
+    toggleUserMenu();
+  });
+
+  actions.forEach((actionButton) => {
+    actionButton.addEventListener("click", () => {
+      const action = actionButton.dataset.action;
+      handleUserMenuAction(action);
+    });
+  });
+
+  populateUserMenu();
+};
+
+if (!token) {
+  window.location.href = "Login/login.html";
+}
 
 function atualizarModoBadge() {
   if (!feiraSelecionada) {
@@ -179,6 +354,7 @@ let primeiravez = true;
 const cal = document.getElementById("calculadora");
 const divs = ["chat-area"];
 const hist = document.getElementById("hist");
+const faqPanel = document.getElementById("faqPanel");
 const calcula = document.getElementById("calculadoraverdade");
 const adicionar = document.getElementById("adcionar");
 const remover = document.getElementById("remover");
@@ -191,26 +367,331 @@ let carregando = false;
 let historicoConversa = [];
 let chatMessages = [];
 
+const API_BASE_URL = "https://davidumbproxmax-classificador-mostratec.hf.space";
+let conversaAtualId = null;
+let listaConversas = [];
+
+const perguntasFrequentes = [
+  { pergunta: "O que é a Mostratec?", categoria: "Sobre feiras" },
+  { pergunta: "Como participar da Febrace?", categoria: "Inscrição" },
+  { pergunta: "Quais são as categorias científicas?", categoria: "Categorias" },
+  { pergunta: "Como escrever um bom resumo?", categoria: "Metodologia" },
+  { pergunta: "O que é metodologia científica?", categoria: "Metodologia" },
+  { pergunta: "Como fazer uma tempestade de ideias?", categoria: "Planejamento" },
+  { pergunta: "Quais documentos são necessários para uma feira?", categoria: "Documentação" },
+  { pergunta: "Como calcular gastos do projeto?", categoria: "Calculadora" },
+  { pergunta: "Qual o cronograma da Mostratec?", categoria: "Cronograma" },
+  { pergunta: "Qual o cronograma da Febrace?", categoria: "Cronograma" },
+  { pergunta: "Qual o cronograma da 12ª DIREC?", categoria: "Cronograma" },
+  { pergunta: "Qual o cronograma da Ciências para Todos?", categoria: "Cronograma" },
+];
+
+const cronogramas = {
+  mostratec: [
+    "📅 Cronograma MOSTRATEC 2026",
+    "",
+    "• Afiliação de feiras: 01/05 a 31/05",
+    "• Submissão direta de projetos: 01/07 a 31/07",
+    "• Inscrição de projetos credenciados por feiras afiliadas (realizadas até 30/06): até 31/07",
+    "• Inscrição de projetos credenciados por feiras afiliadas (realizadas em 07/2026): até 31/08",
+    "• Inscrição de projetos credenciados por feiras afiliadas (realizadas entre 08/2026 e 28/09/2026): até 30/09",
+    "• Divulgação dos projetos selecionados: 01/09",
+    "• Divulgação dos finalistas: 06/10",
+    "• Envio do relatório científico (somente Ensino Médio e Técnico): até 14/10",
+    "• Pagamento das inscrições: até 19/10",
+    "• Realização da feira: 26/10 a 30/10",
+    "",
+    "ℹ️ Projetos credenciados por feiras afiliadas possuem vaga garantida desde que cumpram todas as exigências do regulamento. Apenas projetos do Ensino Médio e Técnico enviam relatório científico.",
+  ].join("\n"),
+  febrace: [
+    "📅 Cronograma FEBRACE 2027",
+    "",
+    "• Abertura das inscrições dos projetos: 22/06/2026",
+    "• Início da afiliação e renovação de feiras: 01/07/2026",
+    "• Encerramento da afiliação de feiras: 31/08/2026 (18h)",
+    "• Divulgação das feiras afiliadas: 22/09/2026",
+    "• Prazo final para envio dos projetos: 20/10/2026 (18h)",
+    "• Divulgação dos finalistas: 18/12/2026 (14h)",
+    "• Prazo final para confirmação dos finalistas: 12/02/2027",
+    "• Mostra Presencial: 15/03 a 19/03/2027",
+    "• Cerimônia de Premiação: 19/03/2027",
+    "",
+    "ℹ️ A FEBRACE acontece anualmente no mês de março. Projetos podem participar por submissão direta ou através de feiras afiliadas.",
+  ].join("\n"),
+  direc: [
+    "📅 Cronograma 12ª DIREC",
+    "",
+    "ℹ️ A 12ª DIREC não possui calendário fixo nacional.",
+    "",
+    "• O cronograma é divulgado anualmente pela SEEC/RN.",
+    "• Normalmente a feira regional ocorre entre agosto e setembro.",
+    "• Os projetos classificados podem receber credenciamento para feiras estaduais e nacionais, dependendo da edição.",
+  ].join("\n"),
+  ciencias: [
+    "📅 Cronograma Ciências para Todos",
+    "",
+    "ℹ️ A Ciências para Todos não possui calendário oficial fixo.",
+    "",
+    "• O cronograma é divulgado anualmente pela organização da feira.",
+    "• Normalmente ocorre durante o segundo semestre.",
+    "• As datas variam conforme o edital publicado.",
+  ].join("\n"),
+};
+
+function detectarCronograma(texto) {
+  const t = texto.toLowerCase();
+  if (t.includes("mostratec")) return cronogramas.mostratec;
+  if (t.includes("febrace")) return cronogramas.febrace;
+  if (t.includes("direc")) return cronogramas.direc;
+  if (t.includes("ciência") || t.includes("ciencias") || t.includes("para todos")) return cronogramas.ciencias;
+  return null;
+}
+
+async function carregarConversas() {
+  const user = getUserData();
+  if (!user?.id) return;
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/conversas/${user.id}`);
+    if (!res.ok) throw new Error("Erro ao carregar conversas");
+    const data = await res.json();
+    listaConversas = Array.isArray(data) ? data : [];
+    renderizarListaConversas();
+  } catch (err) {
+    console.error("Erro ao carregar conversas:", err);
+    listaConversas = [];
+    renderizarListaConversas();
+  }
+}
+
+function renderizarListaConversas() {
+  const histList = document.getElementById("histList");
+  const histEmpty = document.getElementById("histEmpty");
+  if (!histList || !histEmpty) return;
+
+  histList.innerHTML = "";
+
+  if (listaConversas.length === 0) {
+    histEmpty.style.display = "flex";
+    return;
+  }
+
+  histEmpty.style.display = "none";
+
+  listaConversas.forEach((conversa) => {
+    const item = document.createElement("div");
+    item.classList.add("hist-item");
+    if (conversa.id === conversaAtualId) {
+      item.classList.add("active");
+    }
+
+    const title = document.createElement("div");
+    title.classList.add("hist-item-title");
+    title.textContent = conversa.titulo || "Sem título";
+
+    const date = document.createElement("div");
+    date.classList.add("hist-item-date");
+    date.textContent = formatarDataHist(conversa.atualizado_em);
+
+    item.appendChild(title);
+    item.appendChild(date);
+
+    item.addEventListener("click", () => {
+      abrirConversa(conversa.id);
+    });
+
+    histList.appendChild(item);
+  });
+}
+
+function renderizarFaq() {
+  const faqList = document.getElementById("faqList");
+  if (!faqList) return;
+
+  faqList.innerHTML = "";
+
+  perguntasFrequentes.forEach((item) => {
+    const faqItem = document.createElement("div");
+    faqItem.classList.add("hist-item");
+
+    const question = document.createElement("div");
+    question.classList.add("hist-item-title");
+    question.textContent = item.pergunta;
+
+    const category = document.createElement("div");
+    category.classList.add("hist-item-date");
+    category.textContent = item.categoria;
+
+    faqItem.appendChild(question);
+    faqItem.appendChild(category);
+
+    faqItem.addEventListener("click", () => {
+      input.value = item.pergunta;
+      enviarMensagem();
+      input.value = "";
+      fecharFaq();
+    });
+
+    faqList.appendChild(faqItem);
+  });
+}
+
+function formatarDataHist(timestamp) {
+  if (!timestamp) return "";
+  try {
+    const d = new Date(timestamp);
+    const agora = new Date();
+    const diffMs = agora - d;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffH = Math.floor(diffMin / 60);
+
+    if (diffMin < 1) return "Agora";
+    if (diffMin < 60) return `${diffMin}min atrás`;
+    if (diffH < 24) return `${diffH}h atrás`;
+
+    return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+  } catch {
+    return "";
+  }
+}
+
+async function abrirConversa(conversaId) {
+  conversaAtualId = conversaId;
+  chatMessages = [];
+  historicoConversa = [];
+  chatArea.innerHTML = "";
+
+  renderizarListaConversas();
+
+  const chatAra = document.getElementById("hero");
+  if (chatAra) chatAra.style.display = "none";
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    const footer = document.querySelector("footer");
+    if (footer) footer.style.display = "none";
+  }
+  primeiravez = false;
+  if (chatContainer) chatContainer.classList.add("expanded");
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/conversas/${conversaId}/mensagens`);
+    if (!res.ok) throw new Error("Erro ao carregar mensagens");
+    const mensagens = await res.json();
+
+    if (!Array.isArray(mensagens)) return;
+
+    mensagens.forEach((msg) => {
+      const role = msg.remetente === "assistant" ? "assistant" : "user";
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message", role === "assistant" ? "bot" : "user");
+
+      if (role === "assistant") {
+        let conteudo = msg.conteudo;
+        const driveMatch = conteudo.match(driveRegex);
+        let driveUrl = null;
+        let driveTitle = null;
+
+        if (driveMatch) {
+          driveUrl = driveMatch[1].trim();
+          driveTitle = driveMatch[2].trim();
+          conteudo = conteudo.replace(driveMatch[0], "").trim();
+        }
+
+        messageElement.innerHTML = formatarRespostaIA(conteudo);
+
+        chatMessages.push({ role, content: conteudo, driveUrl, driveTitle });
+        historicoConversa.push({ role, content: conteudo });
+
+        chatArea.appendChild(messageElement);
+
+        if (driveUrl && driveTitle) {
+          renderizarCardDrive(driveUrl, driveTitle, messageElement);
+        }
+      } else {
+        messageElement.textContent = msg.conteudo;
+        chatArea.appendChild(messageElement);
+        chatMessages.push({ role, content: msg.conteudo });
+        historicoConversa.push({ role, content: msg.conteudo });
+      }
+    });
+
+    chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+  } catch (err) {
+    console.error("Erro ao abrir conversa:", err);
+    const errorEl = document.createElement("div");
+    errorEl.classList.add("message", "bot");
+    errorEl.textContent = "Erro ao carregar esta conversa.";
+    chatArea.appendChild(errorEl);
+  }
+
+  browser();
+  fecharFaq();
+}
+
+function novaConversa() {
+  conversaAtualId = null;
+  chatMessages = [];
+  historicoConversa = [];
+  chatArea.innerHTML = `<div class="message bot">Olá 👋 Pergunte qualquer coisa sobre as Feiras de Ciências, Horários e muito mais!</div>`;
+
+  const chatAra = document.getElementById("hero");
+
+  if (chatAra) chatAra.style.display = "block";
+  if (chatContainer) chatContainer.classList.remove("expanded");
+
+  primeiravez = true;
+  input.value = "";
+  resetarAlturaTextarea();
+
+  const histList = document.getElementById("histList");
+  if (histList) {
+    histList.querySelectorAll(".hist-item").forEach((el) => {
+      el.classList.toggle("active", false);
+    });
+  }
+
+  browser();
+  fecharFaq();
+}
+
 function limparHistorico() {
   historicoConversa = [];
-  localStorage.removeItem("historicoConversa");
+}
+
+function getUserStoragePrefix() {
+  const user = getUserData();
+  return user?.id ? `user_${user.id}_` : "";
 }
 
 function limparChatSalvo() {
   chatMessages = [];
   historicoConversa = [];
-  localStorage.removeItem("chatMessages");
-  localStorage.removeItem("historicoConversa");
+  conversaAtualId = null;
 }
 
 function salvarConversaAtual() {
-  localStorage.setItem("chatMessages", JSON.stringify(chatMessages));
-  localStorage.setItem("historicoConversa", JSON.stringify(historicoConversa));
+  const prefix = getUserStoragePrefix();
+  localStorage.setItem(prefix + "chatMessages", JSON.stringify(chatMessages));
+  localStorage.setItem(prefix + "historicoConversa", JSON.stringify(historicoConversa));
 }
 
 function carregarConversaAtual() {
-  const dadosChat = localStorage.getItem("chatMessages");
-  const dadosHistorico = localStorage.getItem("historicoConversa");
+  const prefix = getUserStoragePrefix();
+
+  Object.keys(localStorage).forEach((key) => {
+    if (
+      key.startsWith("user_") &&
+      !key.startsWith(prefix) &&
+      (key.endsWith("_chatMessages") ||
+        key.endsWith("_historicoConversa") ||
+        key.endsWith("_dadoscalculadora") ||
+        key.endsWith("_total"))
+    ) {
+      localStorage.removeItem(key);
+    }
+  });
+
+  const dadosChat = localStorage.getItem(prefix + "chatMessages");
+  const dadosHistorico = localStorage.getItem(prefix + "historicoConversa");
 
   if (dadosChat) {
     try {
@@ -241,9 +722,7 @@ function carregarConversaAtual() {
         if (chatContainer) chatContainer.classList.add("expanded");
 
         const chatAra = document.getElementById("hero");
-        const sug = document.getElementById("suggestions");
         if (chatAra) chatAra.style.display = "none";
-        if (sug) sug.style.display = "none";
         if (window.matchMedia("(max-width: 768px)").matches) {
           const footer = document.querySelector("footer");
           if (footer) footer.style.display = "none";
@@ -298,10 +777,15 @@ function selecionarFeira(opcao) {
 
   if (feiraSelecionada) {
     let feiraSlecionadaLowerCase = "";
-    if(feiraSelecionada == "MOSTRATEC") {feiraSlecionadaLowerCase = "Mostratec"}
-    else if(feiraSelecionada == "FEBRACE") {feiraSlecionadaLowerCase = "Febrace"}
-    else if(feiraSelecionada == "Ciências para Todos") {feiraSlecionadaLowerCase = feiraSelecionada}
-    else if(feiraSelecionada == "12ª DIREC") {feiraSlecionadaLowerCase = "12ª Direc"}
+    if (feiraSelecionada == "MOSTRATEC") {
+      feiraSlecionadaLowerCase = "Mostratec";
+    } else if (feiraSelecionada == "FEBRACE") {
+      feiraSlecionadaLowerCase = "Febrace";
+    } else if (feiraSelecionada == "Ciências para Todos") {
+      feiraSlecionadaLowerCase = feiraSelecionada;
+    } else if (feiraSelecionada == "12ª DIREC") {
+      feiraSlecionadaLowerCase = "12ª Direc";
+    }
     input.placeholder = `${feiraSlecionadaLowerCase}`;
   } else {
     input.placeholder = "O que vamos fazer hoje?";
@@ -317,6 +801,11 @@ window.addEventListener("click", (event) => {
   if (!toggle && !insidePopup && popup) {
     popup.classList.remove("show");
   }
+
+  const insideUserMenu = event.target.closest("#user-menu-widget");
+  if (!insideUserMenu) {
+    closeUserMenu();
+  }
 });
 
 async function enviarMensagem() {
@@ -331,9 +820,7 @@ async function enviarMensagem() {
     primeiravez = true;
 
     const chatAra = document.getElementById("hero");
-    const sug = document.getElementById("suggestions");
     if (chatAra) chatAra.style.display = "block";
-    if (sug) sug.style.display = "block";
     if (chatContainer) chatContainer.classList.remove("expanded");
 
     input.value = "";
@@ -350,14 +837,11 @@ async function enviarMensagem() {
 
   if (primeiravez === true) {
     const chatAra = document.getElementById("hero");
-    const sug = document.getElementById("suggestions");
 
     if (chatAra) chatAra.classList.add("fade-out1");
-    if (sug) sug.classList.add("fade-out2");
 
     setTimeout(() => {
       if (chatAra) chatAra.style.display = "none";
-      if (sug) sug.style.display = "none";
       if (window.matchMedia("(max-width: 768px)").matches) {
         const footer = document.querySelector("footer");
         if (footer) footer.style.display = "none";
@@ -378,6 +862,8 @@ async function enviarMensagem() {
   chatMessages.push({ role: "user", content: userMessage });
   salvarConversaAtual();
 
+  const cronogramaInfo = detectarCronograma(userMessage);
+
   const modo = feiraSelecionada ? "classificacao" : "conversa";
 
   let feiraMapeada = "";
@@ -392,7 +878,10 @@ async function enviarMensagem() {
   }
 
   try {
-    const url = "https://davidumbproxmax-classificador-mostratec.hf.space/classificar";
+    const user = getUserData();
+    const usuarioId = user?.id || null;
+
+    const url = `${API_BASE_URL}/classificar`;
 
     console.log(
       `Chamando a API no modo [${modo}] para a feira [${feiraMapeada}]...`,
@@ -405,11 +894,12 @@ async function enviarMensagem() {
         Accept: "application/json",
       },
       body: JSON.stringify({
-        modo: modo,
-        feira: feiraMapeada,
-        mensagem: userMessage,
+        usuario_id: usuarioId,
+        conversa_id: conversaAtualId,
         resumo: userMessage,
-        historico: historicoConversa,
+        feira: feiraMapeada,
+        modo: modo,
+        mensagem: userMessage,
       }),
     });
 
@@ -418,7 +908,23 @@ async function enviarMensagem() {
     if (data.resultado) {
       let textoIA = data.resultado;
 
-      const driveRegex = /\[DRIVE_LINK:\s*([^\|\]]+)\|\s*([^\]]+)\]/i;
+      if (data.conversa_id) {
+        conversaAtualId = data.conversa_id;
+
+        const existente = listaConversas.find((c) => c.id === data.conversa_id);
+        if (existente) {
+          if (data.titulo) existente.titulo = data.titulo;
+          existente.atualizado_em = new Date().toISOString();
+        } else {
+          listaConversas.unshift({
+            id: data.conversa_id,
+            titulo: data.titulo || userMessage.slice(0, 40),
+            atualizado_em: new Date().toISOString(),
+          });
+        }
+        renderizarListaConversas();
+      }
+
       const driveMatch = textoIA.match(driveRegex);
       let driveUrl = null;
       let driveTitle = null;
@@ -465,6 +971,15 @@ async function enviarMensagem() {
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
       }
 
+      if (cronogramaInfo) {
+        const cronogramaEl = document.createElement("div");
+        cronogramaEl.classList.add("message", "bot");
+        cronogramaEl.innerHTML = formatarRespostaIA(cronogramaInfo);
+        chatArea.appendChild(cronogramaEl);
+        chatMessages.push({ role: "assistant", content: cronogramaInfo });
+        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
+      }
+
       salvarConversaAtual();
     } else {
       aiElement.textContent = "Erro na resposta do backend da IA.";
@@ -476,75 +991,8 @@ async function enviarMensagem() {
   }
 }
 
-function btn(entrada) {
-  if (entrada == 1) {
-    input.value = "Dados e Estatísticas";
-    enviarMensagem();
-    if (primeiravez) {
-      const chatAra = document.getElementById("hero");
-      const sug = document.getElementById("suggestions");
-      chatAra.classList.add("fade-out1");
-      sug.classList.add("fade-out2");
-      setTimeout(() => {
-        chatAra.style.display = "none";
-        sug.style.display = "none";
-      }, 500);
-      primeiravez = false;
-      if (chatContainer) chatContainer.classList.add("expanded");
-    }
-    input.value = "";
-  } else if (entrada == 2) {
-    input.value = "Dados e Estatísticas";
-    enviarMensagem();
-    if (primeiravez) {
-      const chatAra = document.getElementById("hero");
-      const sug = document.getElementById("suggestions");
-      chatAra.classList.add("fade-out");
-      sug.classList.add("fade-out2");
-      setTimeout(() => {
-        chatAra.style.display = "none";
-        sug.style.display = "none";
-      }, 500);
-      primeiravez = false;
-      if (chatContainer) chatContainer.classList.add("expanded");
-    }
-    input.value = "";
-  } else if (entrada == 3) {
-    input.value = "Mapa dos Estandes";
-    enviarMensagem();
-    if (primeiravez) {
-      const chatAra = document.getElementById("hero");
-      const sug = document.getElementById("suggestions");
-      chatAra.classList.add("fade-out1");
-      sug.classList.add("fade-out2");
-      setTimeout(() => {
-        chatAra.style.display = "none";
-        sug.style.display = "none";
-      }, 500);
-      primeiravez = false;
-      if (chatContainer) chatContainer.classList.add("expanded");
-    }
-    input.value = "";
-  } else if (entrada == 4) {
-    input.value = "Pesos da Avaliação";
-    enviarMensagem();
-    if (primeiravez) {
-      const chatAra = document.getElementById("hero");
-      const sug = document.getElementById("suggestions");
-      chatAra.classList.add("fade-out1");
-      sug.classList.add("fade-out2");
-      setTimeout(() => {
-        chatAra.style.display = "none";
-        sug.style.display = "none";
-      }, 500);
-      primeiravez = false;
-      if (chatContainer) chatContainer.classList.add("expanded");
-    }
-    input.value = "";
-  }
-}
-
 function browser() {
+  fecharFaq();
   if (calcula.classList.contains("hidden")) {
     if (hist.classList.contains("show")) {
       if (hist.classList.contains("desanimou")) {
@@ -574,6 +1022,26 @@ function browser() {
   }
 }
 
+function toggleFaq() {
+  if (faqPanel.classList.contains("show")) {
+    if (!hist.classList.contains("show")) {
+      hist.classList.add("show");
+      hist.classList.remove("animou");
+    }
+    faqPanel.classList.remove("show");
+    void faqPanel.offsetWidth;
+    faqPanel.classList.add("animou");
+  } else {
+    faqPanel.classList.add("show");
+    faqPanel.classList.remove("animou");
+  }
+}
+
+function fecharFaq() {
+  faqPanel.classList.add("show");
+  faqPanel.classList.remove("animou");
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 const mensagemInicial = urlParams.get("msg");
 if (mensagemInicial) {
@@ -583,12 +1051,9 @@ if (mensagemInicial) {
   window.history.replaceState({}, document.title, novaUrl);
   if (primeiravez) {
     const chatAra = document.getElementById("hero");
-    const sug = document.getElementById("suggestions");
     chatAra.classList.add("fade-out1");
-    sug.classList.add("fade-out2");
     setTimeout(() => {
       chatAra.style.display = "none";
-      sug.style.display = "none";
     }, 500);
     primeiravez = false;
     if (chatContainer) chatContainer.classList.add("expanded");
@@ -917,14 +1382,16 @@ function calcularTotal() {
     total += preco * quantidade;
   });
   aparecertotal.textContent = formatarTotal(total) + " R$";
-  localStorage.setItem("total", total);
+  const prefix = getUserStoragePrefix();
+  localStorage.setItem(prefix + "total", total);
 }
 
 function reset() {
   itens = [];
+  const prefix = getUserStoragePrefix();
 
-  localStorage.setItem("dadoscalculadora", JSON.stringify(itens));
-  localStorage.setItem("total", 0);
+  localStorage.setItem(prefix + "dadoscalculadora", JSON.stringify(itens));
+  localStorage.setItem(prefix + "total", 0);
 
   const aparecertotal = document.getElementById("total");
   if (aparecertotal) {
@@ -937,7 +1404,8 @@ function reset() {
 function salvarcalculadora() {
   if (carregando) return;
 
-  localStorage.setItem("dadoscalculadora", JSON.stringify(itens));
+  const prefix = getUserStoragePrefix();
+  localStorage.setItem(prefix + "dadoscalculadora", JSON.stringify(itens));
 }
 
 function atualizarBotaoTabela() {
@@ -963,7 +1431,8 @@ window.onload = function () {
 
   carregarConversaAtual();
 
-  const dados = localStorage.getItem("dadoscalculadora");
+  const prefix = getUserStoragePrefix();
+  const dados = localStorage.getItem(prefix + "dadoscalculadora");
   const aparecertotal = document.getElementById("total");
 
   if (dados) {
@@ -978,6 +1447,17 @@ window.onload = function () {
     toggleTabelaBotao.addEventListener("click", alternarTabela);
     atualizarBotaoTabela();
   }
+
+  initUserMenu();
+
+  const btnNewChat = document.getElementById("btnNewChat");
+  if (btnNewChat) {
+    btnNewChat.addEventListener("click", novaConversa);
+  }
+
+  carregarConversas();
+
+  renderizarFaq();
 
   carregando = false;
 };
@@ -1041,7 +1521,7 @@ function renderTabelaExcel() {
   });
 }
 
-function escapeHTML(str) {
+function escapeHtml(str) {
   const p = document.createElement("p");
   p.textContent = str;
   return p.innerHTML;
