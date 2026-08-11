@@ -4,7 +4,6 @@ const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
 const modeBadge = document.getElementById("modeBadge");
 const SECRET_CLEAR_CODE = "//clearAll";
-const driveRegex = /\[DRIVE_LINK:\s*([^\|\]]+)\|\s*([^\]]+)\]/i;
 
 const token = localStorage.getItem("token");
 
@@ -227,9 +226,72 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function formatarRespostaIA(texto) {
+function encontrarFonteCitacao(nome, porNome) {
+  const n = (nome || "").toLowerCase().trim();
+  if (!n) return null;
+
+  if (porNome.has(n)) return porNome.get(n);
+
+  const semExt = n.replace(/\.pdf$/i, "").trim();
+  if (porNome.has(semExt)) return porNome.get(semExt);
+  if (porNome.has(semExt + ".pdf")) return porNome.get(semExt + ".pdf");
+
+  if (semExt.length >= 6) {
+    for (const [chave, fonte] of porNome) {
+      if (
+        chave.includes(semExt) ||
+        semExt.includes(chave.replace(/\.pdf$/i, ""))
+      ) {
+        return fonte;
+      }
+    }
+  }
+
+  return null;
+}
+
+function converterCitacoesEmLinks(texto, fontes) {
+  if (!texto || !Array.isArray(fontes) || fontes.length === 0) return texto;
+
+  const porNome = new Map();
+  const nomesEscapados = fontes.map((fonte) => {
+    porNome.set(fonte.arquivo.toLowerCase(), fonte);
+    porNome.set(fonte.arquivo.toLowerCase().replace(/\.pdf$/i, ""), fonte);
+    return fonte.arquivo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  });
+
+  const nomesUnicos = [...new Set(nomesEscapados)];
+  nomesUnicos.sort((a, b) => b.length - a.length);
+
+  const padrao = new RegExp(
+    `\\(([^()]*?)\\s*,\\s*(?:p\\.?|p[áa]g\\.?|p[áa]gina|pagina)\\s*(\\d+)\\)` +
+      `|\\(([^()]*?)\\)` +
+      `|(${nomesUnicos.join("|")})`,
+    "gi",
+  );
+
+  return texto.replace(
+    padrao,
+    (match, nomeComPagina, pagina, nomeSo, nomeBare) => {
+      const nome = (nomeComPagina || nomeSo || nomeBare || "").trim();
+      if (!nome) return match;
+
+      const fonte = encontrarFonteCitacao(nome, porNome);
+      if (!fonte) return match;
+
+      const url = montarUrlDocumento(
+        fonte.arquivo,
+        pagina || fonte.pagina,
+      );
+      return `<a class="rag-citacao-link" href="${url}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+    },
+  );
+}
+
+function formatarRespostaIA(texto, fontes) {
   if (!texto) return "";
 
+  texto = converterCitacoesEmLinks(texto, fontes);
   texto = texto.replace(/^[\s*•-]+\s+/gm, "");
 
   let formatado = texto
@@ -263,61 +325,9 @@ function formatarRespostaIA(texto) {
     .join("");
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function renderizarCardDrive(driveUrl, driveTitle, elementoAnterior) {
-  try {
-    const card = document.createElement("div");
-    card.classList.add("drive-card");
-
-    const a = document.createElement("a");
-    a.classList.add("drive-card-link");
-    a.setAttribute("href", driveUrl);
-    a.setAttribute("target", "_blank");
-    a.setAttribute("rel", "noopener noreferrer");
-
-    const inner = document.createElement("div");
-    inner.classList.add("drive-card-inner");
-
-    const icon = document.createElement("div");
-    icon.classList.add("drive-icon");
-    icon.setAttribute("aria-hidden", "true");
-    icon.textContent = "📁";
-
-    const texts = document.createElement("div");
-    texts.classList.add("drive-texts");
-
-    const titleDiv = document.createElement("div");
-    titleDiv.classList.add("drive-title");
-    titleDiv.innerHTML = escapeHtml(driveTitle);
-
-    const subDiv = document.createElement("div");
-    subDiv.classList.add("drive-sub");
-    subDiv.textContent = "Abrir PDF";
-
-    const arrow = document.createElement("div");
-    arrow.classList.add("drive-arrow");
-    arrow.textContent = "↗";
-
-    texts.appendChild(titleDiv);
-    texts.appendChild(subDiv);
-    inner.appendChild(icon);
-    inner.appendChild(texts);
-    inner.appendChild(arrow);
-    a.appendChild(inner);
-    card.appendChild(a);
-
-    elementoAnterior.after(card);
-  } catch (e) {
-    console.error("Erro criando card do Drive:", e);
-  }
+function montarUrlDocumento(arquivo, pagina) {
+  const url = `${API_BASE_URL}/documentos/${encodeURIComponent(arquivo)}`;
+  return pagina ? `${url}#page=${pagina}` : url;
 }
 
 async function digitarTexto(elemento, html, velocidade = 5) {
@@ -339,7 +349,7 @@ async function digitarTexto(elemento, html, velocidade = 5) {
       exibicaoParcial += html[indice];
       indice += 1;
       elemento.innerHTML = exibicaoParcial;
-      await sleep(velocidade);
+      await sleep(velocidade / 3);
     }
   }
 
@@ -440,6 +450,7 @@ const cronogramas = {
 
 function detectarCronograma(texto) {
   const t = texto.toLowerCase();
+  if (!t.includes("cronograma")) return null;
   if (t.includes("mostratec")) return cronogramas.mostratec;
   if (t.includes("febrace")) return cronogramas.febrace;
   if (t.includes("direc")) return cronogramas.direc;
@@ -586,26 +597,13 @@ async function abrirConversa(conversaId) {
 
       if (role === "assistant") {
         let conteudo = msg.conteudo;
-        const driveMatch = conteudo.match(driveRegex);
-        let driveUrl = null;
-        let driveTitle = null;
 
-        if (driveMatch) {
-          driveUrl = driveMatch[1].trim();
-          driveTitle = driveMatch[2].trim();
-          conteudo = conteudo.replace(driveMatch[0], "").trim();
-        }
+        messageElement.innerHTML = formatarRespostaIA(conteudo, msg.fontes);
 
-        messageElement.innerHTML = formatarRespostaIA(conteudo);
-
-        chatMessages.push({ role, content: conteudo, driveUrl, driveTitle });
+        chatMessages.push({ role, content: conteudo, fontes: msg.fontes || [] });
         historicoConversa.push({ role, content: conteudo });
 
         chatArea.appendChild(messageElement);
-
-        if (driveUrl && driveTitle) {
-          renderizarCardDrive(driveUrl, driveTitle, messageElement);
-        }
       } else {
         messageElement.textContent = msg.conteudo;
         chatArea.appendChild(messageElement);
@@ -706,16 +704,12 @@ function carregarConversaAtual() {
           );
 
           if (item.role === "assistant") {
-            messageElement.innerHTML = formatarRespostaIA(item.content);
+            messageElement.innerHTML = formatarRespostaIA(item.content, item.fontes);
           } else {
             messageElement.textContent = item.content;
           }
 
           chatArea.appendChild(messageElement);
-
-          if (item.role === "assistant" && item.driveUrl && item.driveTitle) {
-            renderizarCardDrive(item.driveUrl, item.driveTitle, messageElement);
-          }
         });
         chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
         primeiravez = false;
@@ -856,7 +850,7 @@ async function enviarMensagem() {
 
   const aiElement = document.createElement("div");
   aiElement.classList.add("message", "bot");
-  aiElement.textContent = "pensando...";
+  aiElement.innerHTML = `<span class="typing-indicator" aria-label="Pensando"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>`;
   chatArea.appendChild(aiElement);
 
   chatMessages.push({ role: "user", content: userMessage });
@@ -925,16 +919,6 @@ async function enviarMensagem() {
         renderizarListaConversas();
       }
 
-      const driveMatch = textoIA.match(driveRegex);
-      let driveUrl = null;
-      let driveTitle = null;
-
-      if (driveMatch) {
-        driveUrl = driveMatch[1].trim();
-        driveTitle = driveMatch[2].trim();
-        textoIA = textoIA.replace(driveMatch[0], "").trim();
-      }
-
       if (modo === "conversa") {
         historicoConversa.push({
           role: "user",
@@ -950,8 +934,7 @@ async function enviarMensagem() {
       chatMessages.push({
         role: "assistant",
         content: textoIA,
-        driveUrl: driveUrl || null,
-        driveTitle: driveTitle || null,
+        fontes: data.fontes_rag || [],
       });
       salvarConversaAtual();
 
@@ -961,15 +944,10 @@ async function enviarMensagem() {
 
       console.log("Histórico atual enviado ao Python:", historicoConversa);
 
-      const textoFormatado = formatarRespostaIA(textoIA);
+      const textoFormatado = formatarRespostaIA(textoIA, data.fontes_rag);
 
       chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
       await digitarTexto(aiElement, textoFormatado, 6);
-
-      if (driveUrl && driveTitle) {
-        renderizarCardDrive(driveUrl, driveTitle, aiElement);
-        chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
-      }
 
       if (cronogramaInfo) {
         const cronogramaEl = document.createElement("div");

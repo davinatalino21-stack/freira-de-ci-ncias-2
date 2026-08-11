@@ -137,14 +137,20 @@ header {
   margin: 0 25px 12px 25px;
   padding: 10px 16px;
   border-radius: 999px;
-  color: var(--surface-strong);
+  color: var(--text);
   font-size: 12px;
   display: none;
-  background: transparent;
-  border: 1px solid rgba(37, 99, 235, 0.12);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
   box-shadow: none;
   cursor: pointer;
   user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.mode-badge:hover {
+  border-color: #2ec4a6;
+  color: #2ec4a6;
 }
 
 .mode-badge.show {
@@ -725,70 +731,55 @@ footer {
   text-align: center;
 }
 
-.drive-card {
-  margin-bottom: 5vh;
+.rag-citacao-link {
+  color: #2ec4a6;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-style: dotted;
+  cursor: pointer;
+  transition: color 0.15s ease, opacity 0.15s ease;
 }
 
-.drive-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
+.rag-citacao-link:hover {
+  color: #2ec4a6;
+  opacity: 0.85;
+  text-decoration-style: solid;
 }
 
-.drive-card-inner {
-  display: flex;
+.typing-indicator {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: linear-gradient(
-    90deg,
-    rgba(66, 133, 244, 0.08),
-    rgba(15, 185, 100, 0.06)
-  );
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  backdrop-filter: blur(6px);
+  gap: 5px;
+  padding: 4px 2px;
 }
 
-.drive-icon {
-  flex: 0 0 44px;
-  height: 44px;
-  width: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  background: linear-gradient(135deg, #fbbc05, #34a853, #4285f4);
-  color: white;
-  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  animation: typing-bounce 1.2s infinite ease-in-out;
 }
 
-.drive-texts {
-  display: flex;
-  flex-direction: column;
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
 }
 
-.drive-title {
-  font-weight: 700;
-  color: var(--text);
-  font-size: 3vh;
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
 }
 
-.drive-sub {
-  font-size: 2.2vh;
-  color: var(--text-secondary);
-}
-
-.drive-arrow {
-  margin-left: 12px;
-  color: var(--text-secondary);
-  font-size: 2.2vh;
-}
-
-.drive-card-link:hover .drive-card-inner {
-  transform: translateY(-4px);
-  transition: transform 0.18s ease;
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
 }
 
 .animou {
@@ -1684,18 +1675,6 @@ footer {
 }
 [data-theme="dark"] .faq-container:hover {
   background-color: rgb(65, 73, 75);
-}
-[data-theme="dark"] .drive-card-inner {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-[data-theme="dark"] .drive-title {
-  color: #e6f7ff;
-}
-[data-theme="dark"] .drive-sub {
-  color: rgba(230, 247, 255, 0.7);
-}
-[data-theme="dark"] .drive-arrow {
-  color: rgba(230, 247, 255, 0.9);
 }
 [data-theme="dark"] .calculadora-container:hover {
   background-color: rgb(65, 73, 75);
