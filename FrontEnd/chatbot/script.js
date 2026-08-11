@@ -334,7 +334,7 @@ function formatarRespostaIA(texto, fontes) {
           if (index === 0) {
             return `<div style="line-height: 1.6;">${linha}</div>`;
           }
-          return `<div style="margin-top: 25px; line-height: 1.6;">${linha}</div>`;
+          return `<div style="margin-top: 18px; line-height: 1.6;">${linha}</div>`;
         })
         .join("");
 
