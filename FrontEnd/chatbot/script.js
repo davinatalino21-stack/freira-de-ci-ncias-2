@@ -334,11 +334,11 @@ function formatarRespostaIA(texto, fontes) {
           if (index === 0) {
             return `<div style="line-height: 1.6;">${linha}</div>`;
           }
-          return `<div style="margin-top: 6px; line-height: 1.6;">${linha}</div>`;
+          return `<div style="margin-top: 25px; line-height: 1.6;">${linha}</div>`;
         })
         .join("");
 
-      return `<div style="margin-bottom: 20px;">${conteudo}</div>`;
+      return `<div style="margin-bottom: 45px;">${conteudo}</div>`;
     })
     .join("");
 }

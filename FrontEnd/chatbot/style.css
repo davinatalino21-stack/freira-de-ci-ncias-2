@@ -1330,6 +1330,7 @@ footer {
 
   .message {
     font-size: 4vw;
+    max-width: 95%;
   }
 
   .input-area {
@@ -1378,11 +1379,23 @@ footer {
     font-size: 3vw;
   }
 
+  .chat-container {
+    width: 100%;
+    padding-inline: 0.25rem;
+    border-radius: 0;
+  }
+
   .chat-area {
     position: relative;
     top: 6vh;
     height: 80vh;
     max-height: 80vh;
+    padding: 1.25rem 0.75rem 0.85rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .chat-area::-webkit-scrollbar {
+    display: none;
   }
 
   .browser-options {
