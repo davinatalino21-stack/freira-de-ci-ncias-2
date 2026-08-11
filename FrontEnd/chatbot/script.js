@@ -251,22 +251,34 @@ function encontrarFonteCitacao(nome, porNome) {
 }
 
 function converterCitacoesEmLinks(texto, fontes) {
-  if (!texto || !Array.isArray(fontes) || fontes.length === 0) return texto;
+  if (!texto) return texto;
+
+  const temFontes = Array.isArray(fontes) && fontes.length > 0;
 
   const porNome = new Map();
-  const nomesEscapados = fontes.map((fonte) => {
-    porNome.set(fonte.arquivo.toLowerCase(), fonte);
-    porNome.set(fonte.arquivo.toLowerCase().replace(/\.pdf$/i, ""), fonte);
-    return fonte.arquivo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  });
+  const nomesEscapados = [];
+
+  if (temFontes) {
+    fontes.forEach((fonte) => {
+      porNome.set(fonte.arquivo.toLowerCase(), fonte);
+      porNome.set(fonte.arquivo.toLowerCase().replace(/\.pdf$/i, ""), fonte);
+      nomesEscapados.push(
+        fonte.arquivo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      );
+    });
+  }
 
   const nomesUnicos = [...new Set(nomesEscapados)];
   nomesUnicos.sort((a, b) => b.length - a.length);
 
+  const padraoNomes = nomesUnicos.length
+    ? `|(${nomesUnicos.join("|")})`
+    : "";
+
   const padrao = new RegExp(
     `\\(([^()]*?)\\s*,\\s*(?:p\\.?|p[áa]g\\.?|p[áa]gina|pagina)\\s*(\\d+)\\)` +
       `|\\(([^()]*?)\\)` +
-      `|(${nomesUnicos.join("|")})`,
+      padraoNomes,
     "gi",
   );
 
@@ -276,8 +288,14 @@ function converterCitacoesEmLinks(texto, fontes) {
       const nome = (nomeComPagina || nomeSo || nomeBare || "").trim();
       if (!nome) return match;
 
-      const fonte = encontrarFonteCitacao(nome, porNome);
-      if (!fonte) return match;
+      let fonte = temFontes ? encontrarFonteCitacao(nome, porNome) : null;
+
+      if (!fonte) {
+        // Sem dados de fontes (ex.: histórico antigo), só vira link se a
+        // citação referenciar claramente um arquivo .pdf.
+        if (!/\.pdf\s*$/i.test(nome)) return match;
+        fonte = { arquivo: nome, pagina: pagina || null };
+      }
 
       const url = montarUrlDocumento(
         fonte.arquivo,
