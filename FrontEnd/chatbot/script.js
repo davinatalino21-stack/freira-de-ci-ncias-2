@@ -226,8 +226,16 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function normalizarNome(texto) {
+  return String(texto || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 function encontrarFonteCitacao(nome, porNome) {
-  const n = (nome || "").toLowerCase().trim();
+  const n = normalizarNome(nome);
   if (!n) return null;
 
   if (porNome.has(n)) return porNome.get(n);
@@ -238,10 +246,9 @@ function encontrarFonteCitacao(nome, porNome) {
 
   if (semExt.length >= 6) {
     for (const [chave, fonte] of porNome) {
-      if (
-        chave.includes(semExt) ||
-        semExt.includes(chave.replace(/\.pdf$/i, ""))
-      ) {
+      const chaveNorm = normalizarNome(chave);
+      const chaveLimpa = chaveNorm.replace(/\.pdf$/i, "");
+      if (chaveNorm.includes(semExt) || semExt.includes(chaveLimpa)) {
         return fonte;
       }
     }
@@ -260,10 +267,18 @@ function converterCitacoesEmLinks(texto, fontes) {
 
   if (temFontes) {
     fontes.forEach((fonte) => {
-      porNome.set(fonte.arquivo.toLowerCase(), fonte);
-      porNome.set(fonte.arquivo.toLowerCase().replace(/\.pdf$/i, ""), fonte);
-      nomesEscapados.push(
-        fonte.arquivo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      const arquivo = fonte.arquivo || "";
+      const semExt = arquivo.replace(/\.pdf$/i, "");
+
+      porNome.set(arquivo.toLowerCase(), fonte);
+      porNome.set(semExt.toLowerCase(), fonte);
+      porNome.set(normalizarNome(arquivo), fonte);
+      porNome.set(normalizarNome(semExt), fonte);
+
+      [arquivo, semExt, normalizarNome(arquivo), normalizarNome(semExt)].forEach(
+        (nome) => {
+          nomesEscapados.push(nome.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+        },
       );
     });
   }
@@ -297,10 +312,7 @@ function converterCitacoesEmLinks(texto, fontes) {
         fonte = { arquivo: nome, pagina: pagina || null };
       }
 
-      const url = montarUrlDocumento(
-        fonte.arquivo,
-        pagina || fonte.pagina,
-      );
+      const url = montarUrlDocumento(fonte.arquivo, pagina || fonte.pagina);
       return `<a class="rag-citacao-link" href="${url}" target="_blank" rel="noopener noreferrer">${match}</a>`;
     },
   );
