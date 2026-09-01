@@ -103,7 +103,7 @@ footer a {
 .logo {
   color: var(--text);
   font-weight: 700;
-  cursor: pointer;
+  cursor: default;
   margin-top: 5vh;
   font-size: clamp(2rem, 8vw, 4rem);
 }

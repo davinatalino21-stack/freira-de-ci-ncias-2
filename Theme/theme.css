@@ -64,6 +64,57 @@
   --success: #10b981;
 }
 
+/* Base cursor rules: text elements default, interactive keep pointer */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+ul,
+ol,
+span,
+label,
+blockquote,
+strong,
+em,
+figcaption,
+th,
+td,
+div,
+section,
+article,
+main,
+header,
+footer,
+form,
+fieldset {
+  cursor: default;
+}
+
+/* Links and buttons keep the pointer cursor */
+a,
+button,
+input[type="submit"],
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+textarea,
+[role="button"],
+summary {
+  cursor: pointer;
+}
+
+/* Content inside links and buttons inherits the pointer cursor */
+a *,
+button *,
+[role="button"] * {
+  cursor: pointer;
+}
+
 /* Optional: smooth transitions when theme changes via a helper class */
 .theme-transition * {
   transition:
