@@ -3,56 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Learn more</title>
+    <meta name="theme-color" content="#0a1628" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f9fc" media="(prefers-color-scheme: light)" />
+    <title>SFAI | Saiba mais</title>
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script src="Theme/theme.js" defer></script>
     <link rel="stylesheet" href="Theme/theme.css" />
+    <link rel="stylesheet" href="Theme/ui.css" />
     <link rel="stylesheet" href="FrontEnd/KnowMore/knowMore.css" />
+    <script src="FrontEnd/KnowMore/knowmore.js" defer></script>
   </head>
-  <body>
-    <main>
-      <img src="img/SFAI_BOT_KNOWMORE.png" />
-      <div class="heroContainer">
-        <h1>Sua pesquisa inteligente</h1>
-        <p>
-          O SFAI é uma inteligência artificial especializada em grandes feiras
-          de ciências, como a Mostratec e a FEBRACE. Nossa missão é simplificar
-          sua jornada científica, respondendo dúvidas que vão desde a
-          identificação de finalistas e análise de resumos até a classificação
-          correta de temas em suas respectivas áreas de conhecimento. Com o
-          SFAI, você tem um mentor digital disponível 24h para garantir que seu
-          projeto siga os mais altos padrões científicos.
-        </p>
-        <h3>O que você pode perguntar?</h3>
-        <ul>
+
+  <body class="about-body">
+    <main class="about-page">
+      <div class="about-hero">
+        <img
+          src="img/SFAI_BOT_KNOWMORE.png"
+          alt="Ilustração do assistente SFAI respondendo dúvidas sobre feiras de ciências"
+          loading="lazy"
+          width="640"
+          height="400"
+        />
+        <div class="about-hero-text">
+          <span class="chip">Conheça o SFAI</span>
+          <h1>Sua pesquisa inteligente</h1>
+          <p>
+            O SFAI é uma inteligência artificial especializada em grandes feiras
+            de ciências, como a Mostratec e a FEBRACE. Nossa missão é simplificar
+            sua jornada científica, respondendo dúvidas que vão desde a
+            identificação de finalistas e análise de resumos até a classificação
+            correta de temas em suas respectivas áreas de conhecimento. Com o
+            SFAI, você tem um mentor digital disponível 24h para garantir que seu
+            projeto siga os mais altos padrões científicos.
+          </p>
+        </div>
+      </div>
+
+      <section class="about-section">
+        <h2>O que você pode perguntar?</h2>
+        <ul class="about-list">
           <li>
-            Quais foram os projetos premiados em Engenharia na Mostratec 2023?
+            <span class="about-bullet">1</span>
+            <span>Quais foram os projetos premiados em Engenharia na Mostratec 2023?</span>
           </li>
-          <li>Como estruturar meu resumo para as normas da FEBRACE</li>
           <li>
-            Meu tema de pesquisa se encaixa em Ciências Sociais ou Humanas?
+            <span class="about-bullet">2</span>
+            <span>Como estruturar meu resumo para as normas da FEBRACE</span>
+          </li>
+          <li>
+            <span class="about-bullet">3</span>
+            <span>Meu tema de pesquisa se encaixa em Ciências Sociais ou Humanas?</span>
           </li>
         </ul>
-        <h3>Como o SFAI simplifica sua pesquisa</h3>
+      </section>
+
+      <section class="about-section">
+        <h2>Como o SFAI simplifica sua pesquisa</h2>
         <div class="benefitsContainer">
-          <div class="firstBenefit">
+          <div class="benefit-card firstBenefit">
             <h4>Base de Dados Real</h4>
             <p>Treinada com editais, resumos e históricos oficiais.</p>
           </div>
-          <div class="secondBenefit">
+          <div class="benefit-card secondBenefit">
             <h4>Respostas Personalizadas</h4>
             <p>Orientações específicas para seu projeto e área de interesse.</p>
           </div>
-          <div class="thirdBenefit">
+          <div class="benefit-card thirdBenefit">
             <h4>Disponível 24/7</h4>
             <p>Suporte contínuo para todas as etapas do seu projeto.</p>
           </div>
         </div>
-        <button class = "botao" onclick="window.location.href = 'index.html'">
-          <strong>Comece Agora</strong>
+      </section>
+
+      <div class="about-actions">
+        <button class="btn btn-primary" onclick="window.location.href = 'index.html'">
+          Comece Agora
         </button>
-        <a href="javascript:void(0)" onclick="displayMessage()">⬅Voltar</a>
+        <a href="javascript:void(0)" class="btn btn-ghost" onclick="displayMessage()">Voltar</a>
       </div>
     </main>
-    <script src="FrontEnd/KnowMore/knowmore.js"></script>
   </body>
 </html>

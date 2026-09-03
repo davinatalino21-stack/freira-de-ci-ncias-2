@@ -1,59 +1,110 @@
 <!doctype html>
-<html>
+<html lang="pt-br">
   <head>
-    <title>SFAI</title>
+    <title>SFAI | Sua pesquisa científica impulsionada por IA</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a1628" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f9fc" media="(prefers-color-scheme: light)" />
+    <meta
+      name="description"
+      content="Assistente inteligente das Feiras de Ciências: dados da Mostratec e Febrace, análise de resumos e categorias científicas."
+    />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script src="Theme/theme.js" defer></script>
     <link rel="stylesheet" href="Theme/theme.css" />
+    <link rel="stylesheet" href="Theme/ui.css" />
     <link rel="stylesheet" href="FrontEnd/Layout/Layout.css" />
+    <script src="FrontEnd/Layout/layout.js" defer></script>
   </head>
-  <body>
-    <header>
+
+  <body class="landing-body">
+    <header class="landing-header">
       <div class="logo">SF<span>AI</span></div>
+      <nav class="landing-nav">
+        <a href="#inicio">Início</a>
+        <a href="#recursos">Recursos</a>
+        <a href="knowMore.html">Saiba mais</a>
+        <a class="btn btn-primary btn-sm" href="index.html">
+          Acessar o ChatBot
+        </a>
+      </nav>
     </header>
-    <div class="containerAll">
-      <div class="containerBody">
-        <!-- mini chat removido -->
-        <div class="informacoesIniciais">
-          <h2 style="text-align: center">
-            <b>Sua pesquisa científica impulsionada por IA</b>
-          </h2>
-          <p style="text-align: justify" class="parr">
-            O <strong>SFAI</strong> é o seu guia inteligente pelas maiores
-            feiras de ciências do Brasil. Especializada em dados da Mostratec e
+
+    <main>
+      <section class="landing-hero" id="inicio">
+        <div class="landing-hero-content">
+          <span class="chip">Assistente das Feiras de Ciências</span>
+          <h1>
+            Sua pesquisa científica
+            <span class="grad-text">impulsionada por IA</span>
+          </h1>
+          <p>
+            O <strong>SFAI</strong> é o seu guia inteligente pelas maiores feiras
+            de ciências do Brasil. Especializado em dados da Mostratec e
             Febrace, nossa IA responde instantaneamente sobre projetos
             finalistas, análise de resumos e categorias científicas,
             transformando sua pesquisa em um projeto de alto impacto.
           </p>
+          <div class="landing-hero-actions">
+            <a class="btn btn-primary" href="index.html">Começar conversa</a>
+            <a class="btn btn-ghost" href="knowMore.html">Conhecer o projeto</a>
+          </div>
         </div>
-      </div>
-      <div
-        style="
-          text-align: center;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin: 10px;
-        "
-      >
-        <button class="botao" ; onclick="(btn(5), btnf(5))">Finalistas</button>
-        <button class="botao" ; onclick="(btn(6), btnf(6))">
-          Projetos Febrace
-        </button>
-        <button class="botao" ; onclick="window.location.href = 'index.html'">
-          Acessar o ChatBot
-        </button>
-        <button class="botao" ; onclick="(btn(7), btnf(7))">
-          Projetos MostraTec
-        </button>
-        <!-- Mini Chat removido -->
-      </div>
-    </div>
 
-    <footer><a href="knowMore.html">➡Saiba mais</a></footer>
+        <div class="landing-actions">
+          <h2>Explore os dados das feiras</h2>
+          <div class="action-grid">
+            <button class="card-btn" onclick="btnf(5)">
+              <span class="card-btn-title">Finalistas</span>
+              <span class="card-btn-desc">Consulte os projetos finalistas da feira atual.</span>
+            </button>
+            <button class="card-btn" onclick="btnf(6)">
+              <span class="card-btn-title">Projetos Febrace</span>
+              <span class="card-btn-desc">Descubra projetos e categorias da Febrace.</span>
+            </button>
+            <button class="card-btn" onclick="btnf(7)">
+              <span class="card-btn-title">Projetos Mostratac</span>
+              <span class="card-btn-desc">Explore projetos da Mostratec.</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
-    <script src="FrontEnd/chatbot/script.js" defer></script>
-    <script src="FrontEnd/Layout/layout.js"></script>
+      <section class="landing-features" id="recursos">
+        <div class="feature-card">
+          <h3>Respostas em RAG</h3>
+          <p>
+            Consultas baseadas em fontes reais das feiras, com citações para
+            você conferir a origem da informação.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h3>Classificação assistida</h3>
+          <p>
+            Escolha uma feira e a IA avalia seu resumo conforme critérios e
+            categorias científicas.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h3>Controle de gastos</h3>
+          <p>
+            Acompanhe os custos do seu projeto com uma calculadora integrada ao
+            assistente.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="landing-footer">
+      <span>SFAI • Feira de Ciências</span>
+      <a href="knowMore.html">Saiba mais →</a>
+    </footer>
   </body>
 </html>

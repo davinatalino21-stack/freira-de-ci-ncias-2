@@ -1,125 +1,184 @@
-/* Global theme variables */
+/* ============================================================
+   SFAI — Design System global
+   Fonte única de tokens. Alterar aqui reflete em todas as páginas.
+   ============================================================ */
+
 :root {
-  /* Light theme — Slate / Indigo palette */
-  --background: linear-gradient(160deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%);
+  /* ----------------------------- Light theme ----------------------------- */
+  --background: linear-gradient(165deg, #f6f9fc 0%, #eef3fb 55%, #ecf6f3 100%);
+  --bg: #f4f8fb;
+  --bg-accent: #e3eef8;
   --surface: #ffffff;
-  --surface-soft: rgba(99, 102, 241, 0.06);
+  --surface-soft: rgba(46, 196, 166, 0.07);
+  --surface-hover: #f1f6fd;
   --surface-strong: #ffffff;
-  --text: #020617;
-  --text-secondary: #334155;
-  --title-color: #020617;
-  --label-color: #334155;
-  --primary: linear-gradient(135deg, #6366f1, #3b82f6);
-  --primary-solid: #3b82f6;
-  --primary-soft: #e0e7ff;
-  --border: #e2e8f0;
-  --surface-hover: #f1f5f9;
-  --shadow: 0 24px 80px rgba(15, 23, 42, 0.06);
 
+  --text: #0c1b2a;
+  --text-secondary: #5b6b80;
+  --text-muted: #6b7b8e;
+  --text-faint: #98a6b8;
+  --title-color: #0c1b2a;
+  --label-color: #5b6b80;
+
+  /* Actions */
+  --primary: linear-gradient(135deg, #2ec4a6, #2563eb);
+  --primary-solid: #2563eb;
+  --primary-soft: #e6f7f3;
+  --accent: #2ec4a6;
+  --accent-solid: #17a98c;
+  --accent-soft: #d8f5ee;
+  --accent-muted: #8fd8c8;
+
+  /* Surfaces / dividers */
+  --border: #e3eaf2;
+  --shadow: 0 20px 60px rgba(12, 27, 42, 0.08);
+  --shadow-sm: 0 6px 24px rgba(12, 27, 42, 0.07);
+
+  /* Status */
   --success: #10b981;
+  --success-soft: #d7f5ea;
+  --danger: #dc2626;
+  --danger-soft: #fde8e8;
+  --warning: #f59e0b;
+  --warning-soft: #fdf0d7;
+  --info: #3b82f6;
+  --info-soft: #e0ecff;
 
-  /* component-specific defaults */
-  --back-button-bg: rgba(99, 102, 241, 0.08);
+  /* Accessibility */
+  --focus-ring: 0 0 0 3px rgba(46, 196, 166, 0.45);
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Component tokens (derivados) */
+  --back-button-bg: rgba(37, 99, 235, 0.08);
   --back-button-color: var(--primary-solid);
-  --btn-secondary-bg: var(--surface-hover);
+  --btn-secondary-bg: var(--surface-soft);
   --btn-secondary-text: var(--text);
   --pill-bg: var(--surface-hover);
-  --badge-google-bg: linear-gradient(135deg, #4285f4, #3b82f6);
+
   --badge-sfai-bg: linear-gradient(135deg, #06b6d4, #0ea5e9);
+  --badge-google-bg: linear-gradient(135deg, #4285f4, #3b82f6);
   --badge-security-bg: linear-gradient(135deg, #10b981, #34d399);
   --badge-admin-bg: linear-gradient(135deg, #f59e0b, #fbbf24);
+
   --security-inner-bg: #ffffff;
 }
 
-/* Dark theme overrides */
-:root[data-theme="dark"],
-[data-theme="dark"] {
-  /* Dark theme per SFAI identity */
-  --background: #13233f; /* principal background */
-  --surface: #1a2b47; /* card background */
-  --surface-soft: #0f2a44; /* subtle soft surface */
-  --surface-strong: #0f172a; /* used for modal strong inner */
-  --text: #e5e7eb; /* main text */
-  --text-secondary: #a8b3c7; /* secondary text */
-  --label-color: #90a4c2; /* labels */
-  --title-color: #ffffff;
-  --primary: linear-gradient(135deg, #2ec4a6, #2563eb);
-  --primary-solid: #2563eb;
-  --primary-soft: rgba(46, 196, 166, 0.06);
-  --border: #29456a; /* card borders */
-  --surface-hover: #223859; /* hover */
-  --shadow: 0 10px 30px rgba(2, 6, 23, 0.6); /* darker soft shadow */
+/* ----------------------------- Dark theme ----------------------------- */
+:root[data-theme="dark"] {
+  --background: linear-gradient(180deg, #0a1628 0%, #0e2038 50%, #102b47 100%);
+  --bg: #0a1628;
+  --bg-accent: rgba(59, 130, 246, 0.12);
+  --surface: #12233c;
+  --surface-soft: rgba(255, 255, 255, 0.05);
+  --surface-hover: #1b304a;
+  --surface-strong: #0d1a2e;
 
-  /* component-specific */
-  --back-button-bg: rgba(255, 255, 255, 0.03);
-  --back-button-color: #e5e7eb;
-  --btn-secondary-bg: #0e2136; /* dark secondary button */
-  --btn-secondary-text: #ffffff;
-  --pill-bg: transparent;
-  --badge-google-bg: #1f6be6; /* blue */
-  --badge-sfai-bg: #15a57a; /* green */
-  --badge-security-bg: #34d399; /* light green */
-  --badge-admin-bg: #f59e0b; /* orange */
-  --security-inner-bg: #223859; /* slightly lighter than card */
-  --success: #10b981;
+  --text: #eef4fb;
+  --text-secondary: #9fb0c6;
+  --text-muted: #9fb0c6;
+  --text-faint: #64748b;
+  --title-color: #ffffff;
+  --label-color: #a9b9cd;
+
+  --primary: linear-gradient(135deg, #2ec4a6, #3b82f6);
+  --primary-solid: #3b82f6;
+  --primary-soft: rgba(46, 196, 166, 0.16);
+  --accent: #2ec4a6;
+  --accent-solid: #3bd6b6;
+  --accent-soft: rgba(46, 196, 166, 0.14);
+  --accent-muted: #3a7d72;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+  --success: #34d399;
+  --success-soft: rgba(16, 185, 129, 0.16);
+  --danger: #f87171;
+  --danger-soft: rgba(220, 38, 38, 0.18);
+  --warning: #fbbf24;
+  --warning-soft: rgba(245, 158, 11, 0.18);
+  --info: #60a5fa;
+  --info-soft: rgba(59, 130, 246, 0.18);
+
+  --focus-ring: 0 0 0 3px rgba(46, 196, 166, 0.45);
+
+  --back-button-bg: rgba(255, 255, 255, 0.05);
+  --back-button-color: #dbe6f5;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.06);
+  --btn-secondary-text: #eef4fb;
+  --pill-bg: rgba(255, 255, 255, 0.06);
+
+  --badge-sfai-bg: #15a57a;
+  --badge-google-bg: #1f6be6;
+  --badge-security-bg: #10b981;
+  --badge-admin-bg: #f59e0b;
+
+  --security-inner-bg: #1a2e4a;
 }
 
-/* Base cursor rules: text elements default, interactive keep pointer */
+/* ----------------------------- Base ----------------------------- */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
-h6,
-p,
-li,
-ul,
-ol,
-span,
-label,
-blockquote,
-strong,
-em,
-figcaption,
-th,
-td,
-div,
-section,
-article,
-main,
-header,
-footer,
-form,
-fieldset {
-  cursor: default;
+h6 {
+  color: var(--title-color);
 }
 
-/* Links and buttons keep the pointer cursor */
-a,
-button,
-input[type="submit"],
-input[type="button"],
-input[type="checkbox"],
-input[type="radio"],
-select,
-textarea,
-[role="button"],
-summary {
-  cursor: pointer;
+a {
+  color: var(--primary-solid);
 }
 
-/* Content inside links and buttons inherits the pointer cursor */
-a *,
-button *,
-[role="button"] * {
-  cursor: pointer;
+/* Keyboard focus visibility across the whole app */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
 }
 
-/* Optional: smooth transitions when theme changes via a helper class */
+/* Theme change transition (opt-in class) */
 .theme-transition * {
   transition:
     background-color 220ms ease,
-    color 180ms ease,
     border-color 180ms ease,
+    color 180ms ease,
     box-shadow 220ms ease;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

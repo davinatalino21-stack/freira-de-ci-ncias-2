@@ -29,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const isActive = panel.dataset.panel === panelName;
       panel.classList.toggle("is-active", isActive);
     });
+    document.querySelectorAll(".auth-tab").forEach((tab) => {
+      const isActive = tab.dataset.target === panelName;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", String(isActive));
+    });
     corpoDoLogin?.classList.toggle("view-login", panelName === "login");
     corpoDoLogin?.classList.toggle("view-cadastro", panelName === "cadastro");
     requestAnimationFrame(updateHeight);
@@ -93,6 +98,29 @@ document.addEventListener("DOMContentLoaded", () => {
       input.classList.remove("input-error");
     });
   };
+
+  const showToast = (message, type = "info") => {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<span>${message}</span>`;
+    toast.setAttribute("role", "status");
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+    setTimeout(() => {
+      toast.classList.remove("is-visible");
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  };
+
+  document.getElementById("forgotPassword")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    showToast(
+      "Recuperação de senha em breve. Fale com o professor responsável pelo suporte.",
+      "info",
+    );
+  });
 
   const setFieldError = (input, message) => {
     const errorElement = document.querySelector(

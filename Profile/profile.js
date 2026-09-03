@@ -156,8 +156,11 @@ const submitProfileUpdate = async (event) => {
         : editAvatarUrl.value.trim() || user.foto,
   };
 
+  const API_BASE_URL =
+    "https://davidumbproxmax-classificador-mostratec.hf.space";
+
   try {
-    const response = await fetch("/api/usuario/atualizar", {
+    const response = await fetch(`${API_BASE_URL}/usuario/atualizar`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -167,18 +170,15 @@ const submitProfileUpdate = async (event) => {
     });
 
     if (!response.ok) {
-      throw new Error("Não foi possível atualizar o perfil.");
+      throw new Error("Não foi possível atualizar o perfil no servidor.");
     }
 
     const result = await response.json().catch(() => null);
     const finalUser = result?.usuario || updatedUser;
     await saveUserData(finalUser);
-    populateProfile();
-    closeEditModal();
-    showToast("Perfil atualizado com sucesso");
   } catch (error) {
-    console.error(error);
     await saveUserData(updatedUser);
+  } finally {
     populateProfile();
     closeEditModal();
     showToast("Perfil atualizado com sucesso");

@@ -1,9 +1,54 @@
-console.log("SCRIPT CARREGOU");
 const input = document.getElementById("user-input");
 const chatArea = document.getElementById("chat-area");
 const chatContainer = document.getElementById("chat-container");
 const modeBadge = document.getElementById("modeBadge");
 const SECRET_CLEAR_CODE = "//clearAll";
+
+const appMain = document.querySelector(".app-main");
+function syncLayoutState() {
+  if (!appMain || !chatContainer) return;
+  const inChat = chatContainer.classList.contains("expanded");
+  appMain.classList.toggle("state-chat", inChat);
+  appMain.classList.toggle("state-initial", !inChat);
+}
+if (chatContainer && "MutationObserver" in window) {
+  const observer = new MutationObserver(syncLayoutState);
+  observer.observe(chatContainer, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+}
+syncLayoutState();
+
+const sidebarEl = document.querySelector(".sidebar");
+const sidebarCollapseBtn = document.querySelector(".sidebar-collapse");
+function aplicarEstadoSidebar(colapsado) {
+  if (!sidebarEl) return;
+  sidebarEl.classList.toggle("collapsed", colapsado);
+  if (sidebarCollapseBtn) {
+    sidebarCollapseBtn.setAttribute("aria-expanded", String(!colapsado));
+    const lbl = sidebarCollapseBtn.querySelector(".nav-label");
+    if (lbl) lbl.textContent = colapsado ? "Expandir" : "Recolher";
+  }
+}
+function toggleSidebar() {
+  if (!sidebarEl) return;
+  const colapsado = !sidebarEl.classList.contains("collapsed");
+  aplicarEstadoSidebar(colapsado);
+  try {
+    localStorage.setItem("sfai_sidebar_collapsed", colapsado ? "1" : "0");
+  } catch (e) {}
+}
+function initSidebar() {
+  let colapsado = false;
+  try {
+    colapsado = localStorage.getItem("sfai_sidebar_collapsed") === "1";
+  } catch (e) {}
+  if (sidebarCollapseBtn) {
+    sidebarCollapseBtn.addEventListener("click", toggleSidebar);
+  }
+  aplicarEstadoSidebar(colapsado);
+}
 
 const token = localStorage.getItem("token");
 
@@ -81,9 +126,7 @@ const populateUserMenu = () => {
   const initials = getUserInitials(user.nome);
 
   if (user.foto) {
-    console.log("Foto:", user.foto);
     const safeUrl = user.foto;
-    console.log("Safe:", safeUrl);
     const existingHeaderImg = headerAvatar.querySelector("img");
     if (
       !existingHeaderImg ||
@@ -140,27 +183,16 @@ const handleUserMenuAction = (action) => {
 };
 
 const initUserMenu = () => {
-  console.log("Menu carregado");
-
   const button = document.getElementById("userMenuButton");
   const dropdown = document.getElementById("userMenuDropdown");
   const actions = document.querySelectorAll(".user-menu-item");
-
-  console.log("Botão encontrado:", button);
-  console.log("Dropdown encontrado:", dropdown);
-  console.log("Ações encontradas:", actions.length);
 
   if (!button) {
     console.error("Botão do menu do usuário não encontrado.");
     return;
   }
 
-  if (!dropdown) {
-    console.error("Dropdown do menu do usuário não encontrado.");
-  }
-
   button.addEventListener("click", (event) => {
-    console.log("Clique detectado no botão do menu do usuário");
     event.stopPropagation();
     toggleUserMenu();
   });
@@ -187,17 +219,19 @@ function atualizarModoBadge() {
   }
 
   modeBadge.classList.add("show", "classificacao");
+  let texto;
   if (feiraSelecionada === "MOSTRATEC") {
-    modeBadge.textContent = "Classificar para Mostratec";
+    texto = "Classificar para Mostratec";
   } else if (feiraSelecionada === "FEBRACE") {
-    modeBadge.textContent = "Classificar para Febrace";
+    texto = "Classificar para Febrace";
   } else if (feiraSelecionada === "Ciências para Todos") {
-    modeBadge.textContent = "Classificar para Ciências para Todos";
+    texto = "Classificar para Ciências para Todos";
   } else if (feiraSelecionada === "12ª DIREC") {
-    modeBadge.textContent = "Classificar para 12ª Direc";
+    texto = "Classificar para 12ª Direc";
   } else {
-    modeBadge.textContent = "🏷️ Classificação ativa";
+    texto = "Classificação ativa";
   }
+  modeBadge.innerHTML = `<span class="mode-badge-close" aria-hidden="true">×</span>${texto}`;
 }
 
 modeBadge.addEventListener("click", () => {
@@ -338,19 +372,19 @@ function formatarRespostaIA(texto, fontes) {
         .filter((linha) => linha !== "");
 
       if (linhas.length === 0) {
-        return '<div style="height: 12px;"></div>';
+        return '<div class="ans-spacer"></div>';
       }
 
       const conteudo = linhas
         .map((linha, index) => {
           if (index === 0) {
-            return `<div style="line-height: 1.6;">${linha}</div>`;
+            return `<div class="ans-line">${linha}</div>`;
           }
-          return `<div style="margin-top: 18px; line-height: 1.6;">${linha}</div>`;
+          return `<div class="ans-line">${linha}</div>`;
         })
         .join("");
 
-      return `<div style="margin-bottom: 45px;">${conteudo}</div>`;
+      return `<div class="ans-block">${conteudo}</div>`;
     })
     .join("");
 }
@@ -391,12 +425,6 @@ ajustarAlturaTextarea();
 
 let subir = 0;
 let primeiravez = true;
-const cal = document.getElementById("calculadora");
-const divs = ["chat-area"];
-const hist = document.getElementById("hist");
-const faqPanel = document.getElementById("faqPanel");
-const calcula = document.getElementById("calculadoraverdade");
-const adicionar = document.getElementById("adcionar");
 const remover = document.getElementById("remover");
 const calculadoraGrid = document.getElementById("calculadoraGrid");
 
@@ -836,8 +864,6 @@ async function enviarMensagem() {
   const userMessage = input.value.trim();
   if (userMessage === "") return;
 
-  console.log("FUNCIONOU");
-
   if (userMessage === SECRET_CLEAR_CODE) {
     limparChatSalvo();
     chatArea.innerHTML = "";
@@ -907,10 +933,6 @@ async function enviarMensagem() {
 
     const url = `${API_BASE_URL}/classificar`;
 
-    console.log(
-      `Chamando a API no modo [${modo}] para a feira [${feiraMapeada}]...`,
-    );
-
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -972,8 +994,6 @@ async function enviarMensagem() {
         historicoConversa = historicoConversa.slice(-10);
       }
 
-      console.log("Histórico atual enviado ao Python:", historicoConversa);
-
       const textoFormatado = formatarRespostaIA(textoIA, data.fontes_rag);
 
       chatArea.scrollTo({ top: chatArea.scrollHeight, behavior: "smooth" });
@@ -990,65 +1010,77 @@ async function enviarMensagem() {
 
       salvarConversaAtual();
     } else {
-      aiElement.textContent = "Erro na resposta do backend da IA.";
-      console.log("Erro detalhado:", data);
+      aiElement.classList.add("chat-error");
+      aiElement.innerHTML = `<span class="chat-error-msg">Erro na resposta do backend da IA.</span>`;
+      console.error("Erro detalhado:", data);
     }
   } catch (erro) {
-    aiElement.textContent = "Erro de conexão com o servidor de IA!";
+    aiElement.classList.add("chat-error");
+    aiElement.innerHTML = `<span class="chat-error-msg">Erro de conexão com o servidor de IA. Verifique sua internet e tente novamente.</span>`;
     console.error("Erro no Fetch:", erro);
   }
 }
 
 function browser() {
-  fecharFaq();
-  if (calcula.classList.contains("hidden")) {
-    if (hist.classList.contains("show")) {
-      if (hist.classList.contains("desanimou")) {
-        hist.classList.toggle("desanimou");
-      }
-      hist.classList.toggle("show");
-      hist.classList.toggle("animou");
-    } else {
-      setTimeout((e) => {
-        hist.classList.toggle("show");
-        if (hist.classList.contains("desanimou")) {
-          hist.classList.toggle("desanimou");
-        }
-      }, 500);
-      hist.classList.toggle("desanimou");
-      hist.classList.toggle("animou");
-    }
-  } else {
-    calcula.classList.toggle("hidden");
-    if (hist.classList.contains("show")) {
-      if (hist.classList.contains("desanimou")) {
-        hist.classList.toggle("desanimou");
-      }
-      hist.classList.toggle("show");
-      hist.classList.toggle("animou");
-    }
+  const el = document.getElementById("hist");
+  const aberto = el.classList.contains("is-open");
+  fecharPainéis();
+  if (!aberto) {
+    el.classList.add("is-open");
+    atualizarBackdrop();
   }
 }
 
 function toggleFaq() {
-  if (faqPanel.classList.contains("show")) {
-    if (!hist.classList.contains("show")) {
-      hist.classList.add("show");
-      hist.classList.remove("animou");
-    }
-    faqPanel.classList.remove("show");
-    void faqPanel.offsetWidth;
-    faqPanel.classList.add("animou");
-  } else {
-    faqPanel.classList.add("show");
-    faqPanel.classList.remove("animou");
+  const el = document.getElementById("faqPanel");
+  const aberto = el.classList.contains("is-open");
+  fecharPainéis();
+  if (!aberto) {
+    el.classList.add("is-open");
+    atualizarBackdrop();
+  }
+}
+
+function fecharPainéis() {
+  document.querySelectorAll(".drawer.is-open").forEach((el) => {
+    el.classList.remove("is-open");
+  });
+  atualizarBackdrop();
+}
+
+function atualizarBackdrop() {
+  const backdrop = document.getElementById("drawerBackdrop");
+  const aberto = document.querySelectorAll(".drawer.is-open").length > 0;
+  if (backdrop) {
+    backdrop.classList.toggle("is-visible", aberto);
+    backdrop.tabIndex = aberto ? 0 : -1;
   }
 }
 
 function fecharFaq() {
-  faqPanel.classList.add("show");
-  faqPanel.classList.remove("animou");
+  const faq = document.getElementById("faqPanel");
+  if (faq) faq.classList.remove("is-open");
+  atualizarBackdrop();
 }
+
+function usarSugestao(texto) {
+  if (!texto) return;
+  input.value = texto;
+  enviarMensagem();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const backdrop = document.getElementById("drawerBackdrop");
+  if (backdrop) {
+    backdrop.addEventListener("click", fecharPainéis);
+  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      fecharPainéis();
+      closeUserMenu();
+    }
+  });
+});
 
 const urlParams = new URLSearchParams(window.location.search);
 const mensagemInicial = urlParams.get("msg");
@@ -1070,18 +1102,12 @@ if (mensagemInicial) {
 }
 
 function calculadora() {
-  if (hist.classList.contains("show")) {
-    calcula.classList.toggle("hidden");
-  } else {
-    calcula.classList.toggle("hidden");
-    setTimeout((e) => {
-      hist.classList.toggle("show");
-      if (hist.classList.contains("desanimou")) {
-        hist.classList.toggle("desanimou");
-      }
-    }, 500);
-    hist.classList.toggle("desanimou");
-    hist.classList.toggle("animou");
+  const el = document.getElementById("calculadoraverdade");
+  const aberto = el.classList.contains("is-open");
+  fecharPainéis();
+  if (!aberto) {
+    el.classList.add("is-open");
+    atualizarBackdrop();
   }
 }
 
@@ -1457,6 +1483,7 @@ window.onload = function () {
   }
 
   initUserMenu();
+  initSidebar();
 
   const btnNewChat = document.getElementById("btnNewChat");
   if (btnNewChat) {

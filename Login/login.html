@@ -1,179 +1,129 @@
 <!doctype html>
-<html>
+<html lang="pt-br">
   <head>
-    <title>Faça o Login</title>
+    <title>Entrar | SFAI</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a1628" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f9fc" media="(prefers-color-scheme: light)" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script src="../Theme/theme.js" defer></script>
     <link rel="stylesheet" href="../Theme/theme.css" />
+    <link rel="stylesheet" href="../Theme/ui.css" />
     <link rel="stylesheet" href="login.css" />
-    <link rel="icon" href="Logo-SFAI.jpeg" />
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
   </head>
-  <body>
+
+  <body class="auth-body">
     <main class="auth-page">
-      <div class="corpo-do-login">
+      <div class="auth-brand">
+        <span class="auth-logo">SF<span>AI</span></span>
+        <p>Seu assistente para as Feiras de Ciências</p>
+      </div>
+
+      <div class="corpo-do-login" id="corpoDoLogin">
+        <!-- Abas -->
+        <div class="auth-tabs" role="tablist" aria-label="Entrar ou criar conta">
+          <a href="#" class="auth-tab switch-link is-active" data-target="login" role="tab" aria-selected="true">Entrar</a>
+          <a href="#" class="auth-tab switch-link" data-target="cadastro" role="tab" aria-selected="false">Criar conta</a>
+        </div>
+
         <div class="auth-forms">
           <section class="auth-panel login-panel is-active" data-panel="login">
             <form id="loginForm" novalidate>
-              <label for="loginEmail" class="label1">E-mail:</label>
-              <input type="email" id="loginEmail" name="email" placeholder="" />
+              <div class="form-field">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" name="email" autocomplete="email" placeholder="voce@email.com" />
+              </div>
               <div class="field-error" data-error-for="loginEmail"></div>
 
-              <label for="loginSenha" class="label2">Senha:</label>
-              <div class="senha-wrapper">
-                <input
-                  type="password"
-                  id="loginSenha"
-                  name="senha"
-                  placeholder=""
-                />
-                <button
-                  type="button"
-                  class="toggle-senha"
-                  aria-label="Mostrar senha"
-                  title="Mostrar senha"
-                >
-                  <svg
-                    class="icon-eye-open"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                    />
-                  </svg>
-                  <svg
-                    class="icon-eye-closed"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    style="display: none"
-                  >
-                    <path
-                      d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"
-                    />
-                  </svg>
-                </button>
+              <div class="form-field">
+                <label for="loginSenha">Senha</label>
+                <div class="senha-wrapper">
+                  <input type="password" id="loginSenha" name="senha" autocomplete="current-password" placeholder="••••••••" />
+                  <button type="button" class="toggle-senha" aria-label="Mostrar senha" title="Mostrar senha">
+                    <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>
+                    <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true" style="display: none"><path d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"/></svg>
+                  </button>
+                </div>
               </div>
               <div class="field-error" data-error-for="loginSenha"></div>
 
-              <a href="senha.html" class="a2">Esqueci a Senha</a>
+              <div class="form-links">
+                <a href="javascript:void(0)" class="a2" id="forgotPassword">Esqueci a senha</a>
+              </div>
 
-              <button class="btn-entrar" type="submit">Entrar</button>
+              <button class="btn btn-primary btn-block" type="submit">Entrar</button>
             </form>
+
+            <div class="auth-divider"><span>ou continue com</span></div>
 
             <div id="buttonDiv"></div>
 
             <div class="auth-switch">
-              <a href="#" class="switch-link" data-target="cadastro"
-                >Não possui conta? Cadastre-se</a
-              >
+              <a href="#" class="switch-link" data-target="cadastro">Não possui conta? Cadastre-se</a>
             </div>
           </section>
 
           <section class="auth-panel cadastro-panel" data-panel="cadastro">
             <form id="cadastroForm" novalidate>
-              <label for="cadastroNome" class="label1">Nome:</label>
-              <input type="text" id="cadastroNome" name="nome" placeholder="" />
+              <div class="form-field">
+                <label for="cadastroNome">Nome</label>
+                <input type="text" id="cadastroNome" name="nome" autocomplete="name" placeholder="Seu nome completo" />
+              </div>
               <div class="field-error" data-error-for="cadastroNome"></div>
 
-              <label for="cadastroEmail" class="label2">E-mail:</label>
-              <input
-                type="email"
-                id="cadastroEmail"
-                name="email"
-                placeholder=""
-              />
+              <div class="form-field">
+                <label for="cadastroEmail">E-mail</label>
+                <input type="email" id="cadastroEmail" name="email" autocomplete="email" placeholder="voce@email.com" />
+              </div>
               <div class="field-error" data-error-for="cadastroEmail"></div>
 
-              <label for="cadastroSenha" class="label2">Senha:</label>
-              <div class="senha-wrapper">
-                <input
-                  type="password"
-                  id="cadastroSenha"
-                  name="senha"
-                  placeholder=""
-                />
-                <button
-                  type="button"
-                  class="toggle-senha"
-                  aria-label="Mostrar senha"
-                  title="Mostrar senha"
-                >
-                  <svg
-                    class="icon-eye-open"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                    />
-                  </svg>
-                  <svg
-                    class="icon-eye-closed"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    style="display: none"
-                  >
-                    <path
-                      d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"
-                    />
-                  </svg>
-                </button>
+              <div class="form-field">
+                <label for="cadastroSenha">Senha</label>
+                <div class="senha-wrapper">
+                  <input type="password" id="cadastroSenha" name="senha" autocomplete="new-password" placeholder="Crie uma senha" />
+                  <button type="button" class="toggle-senha" aria-label="Mostrar senha" title="Mostrar senha">
+                    <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>
+                    <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true" style="display: none"><path d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"/></svg>
+                  </button>
+                </div>
               </div>
               <div class="field-error" data-error-for="cadastroSenha"></div>
 
-              <label for="confirmarSenha" class="label2"
-                >Confirmar senha:</label
-              >
-              <div class="senha-wrapper">
-                <input
-                  type="password"
-                  id="confirmarSenha"
-                  name="confirmarSenha"
-                  placeholder=""
-                />
-                <button
-                  type="button"
-                  class="toggle-senha"
-                  aria-label="Mostrar senha"
-                  title="Mostrar senha"
-                >
-                  <svg
-                    class="icon-eye-open"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                    />
-                  </svg>
-                  <svg
-                    class="icon-eye-closed"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    style="display: none"
-                  >
-                    <path
-                      d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"
-                    />
-                  </svg>
-                </button>
+              <div class="form-field">
+                <label for="confirmarSenha">Confirmar senha</label>
+                <div class="senha-wrapper">
+                  <input type="password" id="confirmarSenha" name="confirmarSenha" autocomplete="new-password" placeholder="Repita a senha" />
+                  <button type="button" class="toggle-senha" aria-label="Mostrar senha" title="Mostrar senha">
+                    <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7Zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>
+                    <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true" style="display: none"><path d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.2 6.2A11 11 0 0 1 12 5c7 0 10 7 10 7a18.4 18.4 0 0 1-3.6 4.4M6.7 8.7A18.3 18.3 0 0 0 2 12s3 7 10 7a11.4 11.4 0 0 0 4.2-.8"/></svg>
+                  </button>
+                </div>
               </div>
               <div class="field-error" data-error-for="confirmarSenha"></div>
 
-              <button class="btn-entrar" type="submit">Criar conta</button>
+              <button class="btn btn-primary btn-block" type="submit">Criar conta</button>
             </form>
 
             <div class="auth-switch">
-              <a href="#" class="switch-link" data-target="login"
-                >Já possui conta? Entrar</a
-              >
+              <a href="#" class="switch-link" data-target="login">Já possui conta? Entrar</a>
             </div>
           </section>
         </div>
       </div>
+
+      <p class="auth-foot">SFAI • Feira de Ciências</p>
+
+      <div id="toastContainer" class="toast-container"></div>
     </main>
   </body>
 </html>
