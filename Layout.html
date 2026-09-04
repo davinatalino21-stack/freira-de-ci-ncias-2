@@ -31,9 +31,7 @@
         <a href="#inicio">Início</a>
         <a href="#recursos">Recursos</a>
         <a href="knowMore.html">Saiba mais</a>
-        <a class="btn btn-primary btn-sm" href="index.html">
-          Acessar o ChatBot
-        </a>
+        <a href="Login/login.html">Entrar</a>
       </nav>
     </header>
 
@@ -59,21 +57,29 @@
         </div>
 
         <div class="landing-actions">
-          <h2>Explore os dados das feiras</h2>
+          <h2>Conheça o SF AI</h2>
+          <p>
+            Use o assistente para consultar dados das feiras, classificar
+            projetos e tirar dúvidas com respostas baseadas nas fontes oficiais.
+          </p>
           <div class="action-grid">
-            <button class="card-btn" onclick="btnf(5)">
-              <span class="card-btn-title">Finalistas</span>
-              <span class="card-btn-desc">Consulte os projetos finalistas da feira atual.</span>
+            <button class="card-btn" onclick="window.location.href='index.html?msg='+encodeURIComponent('Quais são os projetos finalistas da Mostratec?')">
+              <span class="card-btn-title">Descubra os finalistas</span>
+              <span class="card-btn-desc">Pergunte sobre os projetos finalistas das feiras.</span>
             </button>
-            <button class="card-btn" onclick="btnf(6)">
-              <span class="card-btn-title">Projetos Febrace</span>
-              <span class="card-btn-desc">Descubra projetos e categorias da Febrace.</span>
+            <button class="card-btn" onclick="window.location.href='index.html?msg='+encodeURIComponent('Quais são as categorias científicas da Febrace?')">
+              <span class="card-btn-title">Entenda as categorias</span>
+              <span class="card-btn-desc">Explore categorias e projetos da Febrace.</span>
             </button>
-            <button class="card-btn" onclick="btnf(7)">
-              <span class="card-btn-title">Projetos Mostratac</span>
-              <span class="card-btn-desc">Explore projetos da Mostratec.</span>
+            <button class="card-btn" onclick="window.location.href='index.html?msg='+encodeURIComponent('Qual o cronograma da Mostratec?')">
+              <span class="card-btn-title">Veja os cronogramas</span>
+              <span class="card-btn-desc">Consulte datas e prazos das principais feiras.</span>
             </button>
           </div>
+          <p class="landing-actions-tip">
+            💡 Dica: comece uma conversa e pergunte qualquer coisa sobre as
+            Feiras de Ciências — a IA responde instantaneamente.
+          </p>
         </div>
       </section>
 
@@ -93,10 +99,10 @@
           </p>
         </div>
         <div class="feature-card">
-          <h3>Controle de gastos</h3>
+          <h3>Cronogramas e prazos</h3>
           <p>
-            Acompanhe os custos do seu projeto com uma calculadora integrada ao
-            assistente.
+            Consulte datas, inscrições e prazos das principais feiras de
+            ciências de forma rápida.
           </p>
         </div>
       </section>
