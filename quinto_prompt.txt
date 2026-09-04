@@ -1,0 +1,396 @@
+Claro. Vou juntar **os 4 bugs anteriores** com **as 5 novas correções/melhorias**, mantendo tudo em um único prompt organizado e sem perder nenhuma das especificações.
+
+# Prompt Completo — Correções de Bugs, Responsividade e Melhorias de Interface
+
+Realize uma revisão completa da interface da aplicação **SF AI**, com foco em **correção de bugs, responsividade, usabilidade, organização visual, consistência da interface e limpeza do código**.
+
+Implemente todas as correções descritas abaixo **sem alterar desnecessariamente a identidade visual ou o funcionamento atual da aplicação**.
+
+---
+
+# 1. Corrigir responsividade dos botões da Home no Mobile
+
+## Problema
+
+Na versão mobile da Home, os botões **“Acessar o ChatBot”** e **“Começar conversa”** estão ultrapassando parcialmente os limites da tela, ficando cortados ou fora da área visível.
+
+## Objetivo
+
+Corrigir o layout responsivo para que os botões fiquem completamente dentro da tela em dispositivos móveis.
+
+### Requisitos
+
+* Os botões devem respeitar a largura disponível da tela.
+* Não deve existir overflow horizontal.
+* Os botões devem ficar completamente visíveis.
+* Manter o visual atual dos botões:
+
+  * Gradiente.
+  * Cores.
+  * Tipografia.
+  * Border-radius.
+  * Estilo geral.
+* O ajuste deve funcionar em diferentes tamanhos de celulares.
+* Não fazer uma correção específica apenas para uma resolução.
+* Não alterar desnecessariamente a versão desktop.
+
+---
+
+# 2. Não alterar o layout do chatbot ao iniciar uma conversa
+
+## Problema
+
+Ao iniciar uma conversa, a interface do chatbot pode alterar sua estrutura, tamanho ou posicionamento dos elementos.
+
+## Objetivo
+
+Ao iniciar uma conversa, **o layout deve permanecer no mesmo padrão visual e estrutural existente**.
+
+### Requisitos
+
+Manter:
+
+* Barra lateral na mesma posição.
+* Área principal do chatbot.
+* Campo de mensagem.
+* Botão **“Enviar”**.
+* Espaçamentos.
+* Proporções.
+* Estrutura geral da interface.
+
+A conversa deve simplesmente ser iniciada dentro do layout existente.
+
+### IMPORTANTE
+
+Não criar um novo layout quando uma conversa for iniciada.
+
+A correção da responsividade mobile também não deve causar alterações indesejadas no layout do chatbot.
+
+---
+
+# 3. Remover botão “+” da barra lateral no PC
+
+## Problema
+
+Na versão desktop existe um botão **“+” no topo da barra lateral esquerda** que não deve estar presente.
+
+## Objetivo
+
+Remover esse botão exclusivamente da versão desktop.
+
+### Requisitos
+
+* Remover somente o botão “+” localizado no topo da barra lateral.
+* Não remover outros elementos da barra lateral.
+* Não remover o botão “+” localizado próximo ao campo de mensagem.
+* Manter o funcionamento dos demais componentes.
+* A remoção deve ser específica para desktop/PC.
+* Não alterar desnecessariamente a versão mobile.
+
+---
+
+# 4. Corrigir elemento “12 DIREC” aparecendo sobre o campo de mensagem
+
+## Problema
+
+Na versão mobile, um elemento/trecho de conteúdo aparece indevidamente atrás/acima do campo de mensagem. Na imagem de referência, é possível visualizar parcialmente o texto **“12 DIREC”**.
+
+Esse conteúdo está sobreposto à interface e não deveria aparecer nessa região.
+
+## Objetivo
+
+Eliminar completamente esse problema de sobreposição.
+
+### Requisitos
+
+* Identificar a origem do elemento “12 DIREC”.
+* Corrigir o posicionamento/overflow responsável pelo problema.
+* Impedir que conteúdos da conversa apareçam atrás do campo de mensagem.
+* Impedir sobreposição entre mensagens/conteúdo e a área de entrada.
+* Garantir que o campo de mensagem fique totalmente visível.
+* Garantir que o botão “+” do campo de mensagem continue funcionando.
+* Garantir que o botão de envio continue visível e funcionando.
+* A correção deve funcionar em diferentes tamanhos de dispositivos móveis.
+
+---
+
+# 5. Adicionar botão de voltar em todas as abas — Mobile
+
+## Problema
+
+Nos dispositivos móveis, ao abrir painéis laterais como **Histórico, FAQ ou outras abas**, não existe um botão de voltar/fechar claramente visível.
+
+Isso dificulta a navegação.
+
+## Objetivo
+
+Adicionar um botão de voltar ou fechar em **todas as abas/painéis da aplicação no mobile**.
+
+### Requisitos
+
+* Adicionar o botão em todos os painéis laterais.
+* Posicioná-lo no cabeçalho da respectiva aba.
+* O botão deve fechar somente a aba/painel atual.
+* Não deve encerrar a conversa.
+* Não deve alterar outras abas.
+* Manter o padrão visual existente.
+* Utilizar uma seta para a esquerda ou ícone de fechar apropriado.
+* Garantir funcionamento em diferentes dispositivos móveis.
+
+---
+
+# 6. Corrigir sobreposição entre avatar e botão “Nova conversa”
+
+## Problema
+
+Na versão mobile, a foto/avatar do usuário está cobrindo parcialmente o botão **“Nova conversa”**.
+
+## Objetivo
+
+Eliminar completamente essa sobreposição.
+
+### Requisitos
+
+* Identificar a causa raiz do problema.
+* Verificar especialmente:
+
+  * `z-index`;
+  * `position`;
+  * `flex`;
+  * `grid`;
+  * `margin`;
+  * `padding`;
+  * largura dos elementos;
+  * breakpoints responsivos.
+* Garantir espaçamento adequado entre o avatar e o botão.
+* O botão **“Nova conversa”** deve ficar completamente visível e utilizável.
+* Preservar a responsividade.
+* Não alterar desnecessariamente o posicionamento no desktop.
+
+---
+
+# 7. Remover completamente a Calculadora de Gastos
+
+## Problema
+
+A funcionalidade **Calculadora de Gastos** não faz mais parte do projeto.
+
+## Objetivo
+
+Remover completamente essa funcionalidade da aplicação.
+
+### Requisitos
+
+Remover:
+
+* Botão da calculadora.
+* Aba da calculadora.
+* Componentes relacionados.
+* Rotas.
+* Imports.
+* Estados.
+* Funções.
+* Hooks exclusivos.
+* Variáveis relacionadas.
+* Estilos exclusivos.
+* Referências no código.
+* Itens da navegação relacionados à calculadora.
+
+Após a remoção:
+
+* Não devem existir componentes órfãos.
+* Não devem existir imports inutilizados.
+* Não devem aparecer erros no console.
+* As demais funcionalidades devem continuar funcionando normalmente.
+
+---
+
+# 8. Substituir a seção “Explore os dados das feiras”
+
+## Problema
+
+A seção **“Explore os dados das feiras”**, contendo:
+
+* Finalistas;
+* Projetos Febrace;
+* Projetos Mostratec;
+
+ocupa muito espaço na Home e não é tão relevante para a experiência principal do usuário.
+
+## Objetivo
+
+Remover essa seção e substituí-la por um conteúdo mais útil e alinhado ao objetivo principal da plataforma.
+
+### Sugestão de novo conteúdo
+
+Criar uma seção que incentive e ajude o usuário a utilizar o chatbot, podendo conter:
+
+* Exemplos de perguntas que podem ser feitas ao chatbot.
+* Principais funcionalidades da plataforma.
+* Recursos disponíveis.
+* Dicas rápidas de utilização.
+* Exemplos de consultas.
+* Informações úteis para novos usuários.
+
+A nova seção deve:
+
+* Seguir a identidade visual atual.
+* Utilizar os mesmos padrões de cards/componentes existentes.
+* Ser responsiva.
+* Não ocupar espaço excessivo.
+* Incentivar o usuário a iniciar uma conversa.
+
+Não alterar desnecessariamente o restante da Home.
+
+---
+
+# 9. Padronizar os botões principais da Home
+
+## Problema
+
+Existem dois botões com aparência e finalidade semelhantes:
+
+* **“Acessar o ChatBot”**
+* **“Começar conversa”**
+
+Isso pode gerar redundância e falta de consistência visual.
+
+## Objetivo
+
+Padronizar esses botões ou remover um deles caso tenham exatamente a mesma função.
+
+### Se ambos permanecerem
+
+Eles devem possuir:
+
+* Mesmo tamanho.
+* Mesma altura.
+* Mesma largura ou comportamento responsivo equivalente.
+* Mesmo gradiente.
+* Mesma tipografia.
+* Mesmo padding.
+* Mesmo border-radius.
+* Mesmo efeito hover.
+* Mesmo efeito de clique.
+* Mesmo padrão de alinhamento.
+
+### Se executarem exatamente a mesma função
+
+Manter apenas um dos botões e remover o redundante.
+
+### IMPORTANTE
+
+Essa alteração não deve prejudicar a correção de responsividade descrita no **Bug 1**.
+
+---
+
+# 10. Diretrizes gerais de implementação
+
+Durante toda a implementação:
+
+* **Não refazer o layout inteiro da aplicação.**
+* Não alterar a identidade visual existente.
+* Preservar a paleta de cores atual.
+* Preservar fontes e estilos atuais.
+* Preservar as funcionalidades que já estão funcionando.
+* Não criar regressões em desktop.
+* Não criar regressões em mobile.
+* Garantir responsividade em diferentes resoluções.
+* Evitar soluções específicas para uma única resolução de tela.
+* Priorizar soluções estruturais e responsivas.
+* Remover código morto quando estiver diretamente relacionado às funcionalidades removidas.
+* Remover componentes órfãos.
+* Remover imports desnecessários.
+* Manter o código organizado e legível.
+* Não modificar funcionalidades que não estejam relacionadas aos problemas descritos.
+
+---
+
+# 11. Análise da causa raiz
+
+Antes de implementar cada correção, **identifique brevemente a causa raiz do problema**.
+
+Não aplicar simplesmente alterações aleatórias de CSS.
+
+Verificar se o problema é causado por:
+
+* `overflow`;
+* largura fixa;
+* `min-width`;
+* `max-width`;
+* `height`;
+* `position`;
+* `z-index`;
+* `flex`;
+* `grid`;
+* margens;
+* padding;
+* containers;
+* breakpoints;
+* elementos duplicados;
+* estados da aplicação;
+* rotas;
+* componentes;
+* ou qualquer outra causa relacionada.
+
+Depois, implemente a solução mais adequada.
+
+---
+
+# 12. Teste de regressão
+
+Depois de realizar todas as alterações, revisar a aplicação considerando pelo menos:
+
+### Desktop/PC
+
+Verificar:
+
+* Barra lateral.
+* Ausência do botão “+” no topo da sidebar.
+* Chatbot.
+* Campo de mensagem.
+* Botão “Enviar”.
+* Início de uma conversa.
+* Navegação.
+* Home.
+* Botões principais.
+
+### Mobile
+
+Verificar:
+
+* Botões da Home dentro da tela.
+* Avatar e botão “Nova conversa”.
+* Botões de voltar nas abas.
+* Histórico.
+* FAQ.
+* Chatbot.
+* Campo de mensagem.
+* Botão “+” do campo de mensagem.
+* Botão de envio.
+* Ausência do elemento “12 DIREC”.
+* Ausência de sobreposição.
+* Navegação inferior.
+* Início de uma conversa.
+
+---
+
+# Resultado esperado
+
+Ao final da implementação:
+
+* ✅ Os botões **“Acessar o ChatBot”** e **“Começar conversa”** não ultrapassam a tela no mobile.
+* ✅ O layout do chatbot permanece estável ao iniciar uma conversa.
+* ✅ O botão “+” do topo da barra lateral é removido no PC.
+* ✅ O botão “+” do campo de mensagem continua funcionando.
+* ✅ O elemento **“12 DIREC”** não aparece mais indevidamente no mobile.
+* ✅ Nenhum conteúdo fica sobreposto ao campo de mensagem.
+* ✅ Todas as abas/painéis possuem botão de voltar no mobile.
+* ✅ O avatar não cobre mais o botão **“Nova conversa”**.
+* ✅ A **Calculadora de Gastos** foi completamente removida.
+* ✅ A seção **“Explore os dados das feiras”** foi substituída por um conteúdo mais útil.
+* ✅ Os botões principais da Home estão visualmente padronizados ou unificados caso sejam redundantes.
+* ✅ A interface continua mantendo a identidade visual original.
+* ✅ Desktop e mobile permanecem funcionais.
+* ✅ Não são introduzidos novos problemas de alinhamento, sobreposição ou responsividade.
+* ✅ O código permanece limpo, organizado e sem componentes ou imports desnecessários.

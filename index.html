@@ -25,24 +25,11 @@
       <aside class="sidebar" aria-label="Navegação principal">
         <button
           type="button"
-          class="btn-new-chat"
-          onclick="novaConversa()"
-          title="Nova conversa"
-          aria-label="Nova conversa"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          <span class="nav-label">Nova conversa</span>
-        </button>
-
-        <button
-          type="button"
           class="brand"
           onclick="window.location.href = 'Layout.html'"
           title="Página inicial"
         >
-          SF<span>AI</span>
+          La<span>r</span>
         </button>
 
         <nav class="sidebar-nav">
@@ -74,29 +61,6 @@
             </svg>
             <span class="nav-label">Perguntas frequentes</span>
           </button>
-
-          <button
-            type="button"
-            class="nav-btn"
-            id="calculadora"
-            onclick="calculadora()"
-            title="Calculadora de gastos"
-            aria-label="Calculadora de gastos"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="4" y="2" width="16" height="20" rx="2"/>
-              <line x1="8" y1="6" x2="16" y2="6"/>
-              <line x1="8" y1="10" x2="8" y2="10.01"/>
-              <line x1="12" y1="10" x2="12" y2="10.01"/>
-              <line x1="16" y1="10" x2="16" y2="10.01"/>
-              <line x1="8" y1="14" x2="8" y2="14.01"/>
-              <line x1="12" y1="14" x2="12" y2="14.01"/>
-              <line x1="16" y1="14" x2="16" y2="14.01"/>
-              <line x1="8" y1="18" x2="8" y2="18.01"/>
-              <line x1="12" y1="18" x2="16" y2="18"/>
-            </svg>
-            <span class="nav-label">Gastos</span>
-          </button>
         </nav>
 
         <div class="sidebar-foot">
@@ -108,7 +72,7 @@
             aria-expanded="true"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><polyline points="16 8 12 12 8 8"/>
+              <polyline points="15 18 9 12 15 6"/>
             </svg>
             <span class="nav-label">Recolher</span>
           </button>
@@ -187,8 +151,8 @@
             <div class="hero-chips" aria-label="Sugestões rápidas">
               <button type="button" class="chip" onclick="usarSugestao('O que é a Mostratec?')">O que é a Mostratec?</button>
               <button type="button" class="chip" onclick="usarSugestao('Como participar da Febrace?')">Como participar da Febrace?</button>
-              <button type="button" class="chip" onclick="usarSugestao('Qual o cronograma da Mostratec?')">Cronograma Mostratec</button>
-              <button type="button" class="chip" onclick="usarSugestao('Qual o cronograma da Febrace?')">Cronograma Febrace</button>
+              <button type="button" class="chip" onclick="usarSugestao('Qual o cronograma da Mostratec?')">Qual o cronograma Mostratec?</button>
+              <button type="button" class="chip" onclick="usarSugestao('Qual o cronograma da Febrace?')">Qual o cronograma Febrace?</button>
             </div>
           </div>
         </div>
@@ -212,6 +176,11 @@
       <aside id="hist" class="drawer" aria-label="Histórico de conversas">
         <div class="drawer-header">
           <div class="drawer-title">
+            <button type="button" class="drawer-back" onclick="fecharPainéis()" aria-label="Fechar painel" title="Fechar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+            </button>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
             </svg>
@@ -237,6 +206,11 @@
       <aside id="faqPanel" class="drawer" aria-label="Perguntas frequentes">
         <div class="drawer-header">
           <div class="drawer-title">
+            <button type="button" class="drawer-back" onclick="fecharPainéis()" aria-label="Fechar painel" title="Fechar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+            </button>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
@@ -246,53 +220,6 @@
         <p class="drawer-subtitle">Toque em uma pergunta para perguntar ao assistente.</p>
         <div class="hist-list faq-list" id="faqList"></div>
       </aside>
-
-      <!-- ======= Painel: Calculadora ======= -->
-      <section id="calculadoraverdade" class="drawer drawer-wide" aria-label="Calculadora de gastos">
-        <div class="drawer-header">
-          <div class="drawer-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/>
-            </svg>
-            <h3>Calculadora de gastos</h3>
-          </div>
-        </div>
-
-        <div class="calculadora-body">
-          <div class="calculadora-left">
-            <div class="calculadora-controls">
-              <button type="button" class="btn btn-primary calc-action" onclick="adicionaraa()" id="adicionar">Adicionar</button>
-              <button type="button" class="btn btn-secondary calc-action" onclick="reset()" id="remover">Resetar</button>
-            </div>
-
-            <div class="calc-inputs">
-              <input type="text" placeholder="Material" id="materialInput" class="materialInput" aria-label="Nome do material" />
-              <input type="number" step="0.01" min="0" placeholder="Preço (R$)" id="precoInput" class="precoInput" aria-label="Preço do material" />
-            </div>
-
-            <div class="total-wrap">
-              <span class="total-label">Total</span>
-              <p class="total" id="total" aria-live="polite">0,00 R$</p>
-            </div>
-
-            <div class="calculadora-grid" id="calculadoraGrid"></div>
-          </div>
-
-          <div class="calculadora-right">
-            <div class="table-actions">
-              <button type="button" class="btn btn-secondary btn-sm" id="toggleTabela">Mostrar tabela</button>
-            </div>
-            <div class="tabelaExcel hidden-tabela" id="tabelaExcel">
-              <div class="inf" aria-hidden="true">
-                <p class="nome">Material</p>
-                <p class="preco">Preço</p>
-                <p class="qtd">Quantidade</p>
-                <p class="total-col">Total</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
     <!-- ======= Menu do usuário ======= -->

@@ -111,6 +111,18 @@
   font-size: 0.92rem;
 }
 
+.landing-actions-tip {
+  margin-top: 18px;
+  margin-bottom: 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-md, 14px);
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .action-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -147,6 +159,19 @@
 .card-btn-desc {
   font-size: 0.82rem;
   color: var(--text-muted);
+}
+
+/* Ghost button (consistente com o botão primário da Home) */
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  border-color: var(--accent);
 }
 
 /* Features */
@@ -214,5 +239,45 @@
 
   .landing-nav a:not(.btn) {
     display: none;
+  }
+
+  .landing-nav {
+    gap: 12px;
+  }
+
+  .landing-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 540px) {
+  .landing-header {
+    padding: 12px 16px;
+  }
+
+  .landing-hero {
+    padding: 32px 16px 40px;
+  }
+
+  .landing-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .landing-hero-actions .btn {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .landing-features {
+    padding: 8px 16px 56px;
+  }
+}
+
+@media (max-width: 380px) {
+  .landing-hero-actions {
+    gap: 10px;
   }
 }
